@@ -1,0 +1,26 @@
+openapi: 3.0.0
+info:
+  title: API
+  description: API仕様
+  version: v1
+
+# servers:
+#   - url: 'http://localhost:/'
+
+paths:
+  /api/v1/active_sessions:
+    $ref: './resources/endpoints/api/v1/active_sessions.yml'
+  /api/v1/active_sessions/{activeSessionId}:
+    $ref: './resources/endpoints/api/v1/active_session.yml'
+  /api/v1/passwords:
+    $ref: './resources/endpoints/api/v1/passwords.yml'
+  /api/v1/passwords/{token}:
+    $ref: './resources/endpoints/api/v1/password.yml'
+  /api/v1/sessions:
+    $ref: './resources/endpoints/api/v1/sessions.yml'
+  /api/v1/users:
+    $ref: './resources/endpoints/api/v1/users.yml'
+  /api/v1/user/profile:
+    $ref: './resources/endpoints/api/v1/user/profile.yml'
+  /api/v1/users/me:
+    $ref: './resources/endpoints/api/v1/users/me.yml'

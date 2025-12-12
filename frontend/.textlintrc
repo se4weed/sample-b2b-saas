@@ -1,0 +1,14 @@
+{
+  "plugins": {},
+  "filters": {
+    "comments": true,
+    "allowlist": {
+      "allow": [
+        "/^::::/m"
+      ]
+    }
+  },
+  "rules": {
+    "preset-ja-technical-writing": true
+  }
+}

@@ -1,0 +1,54 @@
+patch:
+  tags:
+    - User
+  summary: ユーザープロフィールを更新する
+  description: ユーザープロフィールを更新する
+  operationId: patchUserProfile
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '#/components/schemas/patch_user_profile_request'
+  responses:
+    '200':
+      description: ユーザープロフィールを更新しました
+      content:
+        application/json:
+          schema:
+            $ref: '../../../../schemas/responses.yml#/ok'
+    '400':
+      description: リクエストエラー
+      content:
+        application/json:
+          schema:
+            $ref: '../../../../schemas/responses.yml#/bad_request'
+    '403':
+      description: ログインできていない
+      content:
+        application/json:
+          schema:
+            $ref: '../../../../schemas/responses.yml#/forbidden'
+    '404':
+      description: ユーザーがすでに削除済み
+      content:
+        application/json:
+          schema:
+            $ref: '../../../../schemas/responses.yml#/not_found'
+    '422':
+      description: ユーザープロフィールの更新に失敗しました
+      content:
+        application/json:
+          schema:
+            $ref: '../../../../schemas/responses.yml#/unprocessable_entity_error'
+
+components:
+  schemas:
+    patch_user_profile_request:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          example: Test User

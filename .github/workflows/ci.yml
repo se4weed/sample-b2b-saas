@@ -1,0 +1,332 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [ main ]
+
+jobs:
+  scan_ruby:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: .ruby-version
+          bundler-cache: true
+
+      - name: Scan for common Rails security vulnerabilities using static analysis
+        run: bin/brakeman --no-pager
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: .ruby-version
+          bundler-cache: true
+
+      - name: Lint code for consistent style
+        run: bin/rubocop -f github
+
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:17.4-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U postgres"
+          --health-interval=1s
+          --health-timeout=5s
+          --health-retries=60
+          --health-start-period=5s
+          --tmpfs=/var/lib/postgresql/data:noexec,nosuid,size=1024m
+
+      # redis:
+      #   image: redis
+      #   ports:
+      #     - 6379:6379
+      #   options: --health-cmd "redis-cli ping" --health-interval 10s --health-timeout 5s --health-retries 5
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Cache apt packages
+        uses: actions/cache@v4
+        with:
+          path: |
+            /var/cache/apt/archives
+            /var/lib/apt/lists
+          key: ${{ runner.os }}-apt-v3-build-essential-libpq-dev-libyaml-dev-pkg-config
+          restore-keys: |
+            ${{ runner.os }}-apt-v2-
+            ${{ runner.os }}-apt-
+
+      - name: Install packages
+        run: |
+          # Only update if we don't have cached packages
+          if [ ! -f /var/cache/apt/archives/lock ]; then
+            sudo apt-get update
+          fi
+          sudo apt-get install --no-install-recommends -y \
+            build-essential \
+            git \
+            libpq-dev \
+            libyaml-dev \
+            pkg-config
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: .ruby-version
+          bundler-cache: true
+
+      - name: Cache Rails bootsnap
+        uses: actions/cache@v4
+        with:
+          path: tmp/cache/bootsnap*
+          key: ${{ runner.os }}-bootsnap-${{ hashFiles('**/Gemfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-bootsnap-
+
+      - name: Run RSpec tests
+        env:
+          RAILS_ENV: test
+          DATABASE_URL: postgres://postgres:postgres@localhost:5432
+          # REDIS_URL: redis://localhost:6379/0
+        run: |
+          bin/rails db:test:prepare
+          bundle exec rspec
+
+      - name: Keep screenshots from failed system tests
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: screenshots
+          path: ${{ github.workspace }}/tmp/screenshots
+          if-no-files-found: ignore
+
+  frontend_lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check frontend changes
+        id: frontend_changes
+        run: |
+          if [ "${{ github.event_name }}" = "push" ] && [ "${{ github.ref }}" = "refs/heads/main" ]; then
+            # Main branch push: check changes from previous commit
+            if git diff --name-only HEAD~1 HEAD | grep -E '^frontend/|^package\.json$|^pnpm-lock\.yaml$|^pnpm-workspace\.yaml$' > /dev/null; then
+              echo "changed=true" >> $GITHUB_OUTPUT
+            else
+              echo "changed=false" >> $GITHUB_OUTPUT
+            fi
+          elif [ "${{ github.event_name }}" = "pull_request" ]; then
+            # Pull request: check changes from base branch
+            if git diff --name-only origin/${{ github.base_ref }}...HEAD | grep -E '^frontend/|^package\.json$|^pnpm-lock\.yaml$|^pnpm-workspace\.yaml$' > /dev/null; then
+              echo "changed=true" >> $GITHUB_OUTPUT
+            else
+              echo "changed=false" >> $GITHUB_OUTPUT
+            fi
+          else
+            # Other cases: always run
+            echo "changed=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Install pnpm
+        if: steps.frontend_changes.outputs.changed == 'true'
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        if: steps.frontend_changes.outputs.changed == 'true'
+        uses: actions/setup-node@v5
+        with:
+          node-version: "22"
+          cache: "pnpm"
+          cache-dependency-path: "frontend/pnpm-lock.yaml"
+
+      - name: Install frontend dependencies
+        if: steps.frontend_changes.outputs.changed == 'true'
+        working-directory: frontend
+        run: pnpm install --frozen-lockfile
+
+      - name: Run ESLint
+        if: steps.frontend_changes.outputs.changed == 'true'
+        working-directory: frontend
+        run: pnpm lint:eslint
+
+      - name: Run Prettier check
+        if: steps.frontend_changes.outputs.changed == 'true'
+        working-directory: frontend
+        run: pnpm lint:prettier
+
+      - name: Run Stylelint
+        if: steps.frontend_changes.outputs.changed == 'true'
+        working-directory: frontend
+        run: pnpm lint:style
+
+      - name: Run Textlint
+        if: steps.frontend_changes.outputs.changed == 'true'
+        working-directory: frontend
+        run: pnpm lint:text
+
+  frontend_build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check frontend changes
+        id: frontend_changes
+        run: |
+          if [ "${{ github.event_name }}" = "push" ] && [ "${{ github.ref }}" = "refs/heads/main" ]; then
+            # Main branch push: check changes from previous commit
+            if git diff --name-only HEAD~1 HEAD | grep -E '^frontend/|^package\.json$|^pnpm-lock\.yaml$|^pnpm-workspace\.yaml$' > /dev/null; then
+              echo "changed=true" >> $GITHUB_OUTPUT
+            else
+              echo "changed=false" >> $GITHUB_OUTPUT
+            fi
+          elif [ "${{ github.event_name }}" = "pull_request" ]; then
+            # Pull request: check changes from base branch
+            if git diff --name-only origin/${{ github.base_ref }}...HEAD | grep -E '^frontend/|^package\.json$|^pnpm-lock\.yaml$|^pnpm-workspace\.yaml$' > /dev/null; then
+              echo "changed=true" >> $GITHUB_OUTPUT
+            else
+              echo "changed=false" >> $GITHUB_OUTPUT
+            fi
+          else
+            # Other cases: always run
+            echo "changed=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Install pnpm
+        if: steps.frontend_changes.outputs.changed == 'true'
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        if: steps.frontend_changes.outputs.changed == 'true'
+        uses: actions/setup-node@v5
+        with:
+          node-version: "22"
+          cache: "pnpm"
+          cache-dependency-path: "frontend/pnpm-lock.yaml"
+
+      - name: Install frontend dependencies
+        if: steps.frontend_changes.outputs.changed == 'true'
+        working-directory: frontend
+        run: pnpm install --frozen-lockfile
+
+      - name: Type check
+        if: steps.frontend_changes.outputs.changed == 'true'
+        working-directory: frontend
+        run: pnpm typecheck
+
+      - name: Build frontend
+        if: steps.frontend_changes.outputs.changed == 'true'
+        working-directory: frontend
+        run: pnpm build
+
+  frontend_test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check frontend changes
+        id: frontend_changes
+        run: |
+          if [ "${{ github.event_name }}" = "push" ] && [ "${{ github.ref }}" = "refs/heads/main" ]; then
+            # Main branch push: check changes from previous commit
+            if git diff --name-only HEAD~1 HEAD | grep -E '^frontend/|^package\.json$|^pnpm-lock\.yaml$|^pnpm-workspace\.yaml$' > /dev/null; then
+              echo "changed=true" >> $GITHUB_OUTPUT
+            else
+              echo "changed=false" >> $GITHUB_OUTPUT
+            fi
+          elif [ "${{ github.event_name }}" = "pull_request" ]; then
+            # Pull request: check changes from base branch
+            if git diff --name-only origin/${{ github.base_ref }}...HEAD | grep -E '^frontend/|^package\.json$|^pnpm-lock\.yaml$|^pnpm-workspace\.yaml$' > /dev/null; then
+              echo "changed=true" >> $GITHUB_OUTPUT
+            else
+              echo "changed=false" >> $GITHUB_OUTPUT
+            fi
+          else
+            # Other cases: always run
+            echo "changed=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Install pnpm
+        if: steps.frontend_changes.outputs.changed == 'true'
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        if: steps.frontend_changes.outputs.changed == 'true'
+        uses: actions/setup-node@v5
+        with:
+          node-version: "22"
+          cache: "pnpm"
+          cache-dependency-path: "frontend/pnpm-lock.yaml"
+
+      - name: Install frontend dependencies
+        if: steps.frontend_changes.outputs.changed == 'true'
+        working-directory: frontend
+        run: pnpm install --frozen-lockfile
+
+      - name: Run frontend tests
+        if: steps.frontend_changes.outputs.changed == 'true'
+        working-directory: frontend
+        run: pnpm test
+
+  ci_success:
+    runs-on: ubuntu-latest
+    needs: [scan_ruby, lint, test, frontend_lint, frontend_build, frontend_test]
+    if: always()
+    steps:
+      - name: Check all jobs status
+        run: |
+          # Check required jobs (must succeed)
+          if [[ "${{ needs.scan_ruby.result }}" != "success" || \
+                "${{ needs.lint.result }}" != "success" || \
+                "${{ needs.test.result }}" != "success" ]]; then
+            echo "Required jobs failed"
+            exit 1
+          fi
+          
+          # Check frontend jobs (must succeed or be skipped)
+          if [[ "${{ needs.frontend_lint.result }}" != "success" && "${{ needs.frontend_lint.result }}" != "skipped" ]]; then
+            echo "Frontend lint job failed"
+            exit 1
+          fi
+          
+          if [[ "${{ needs.frontend_build.result }}" != "success" && "${{ needs.frontend_build.result }}" != "skipped" ]]; then
+            echo "Frontend build job failed"
+            exit 1
+          fi
+          
+          if [[ "${{ needs.frontend_test.result }}" != "success" && "${{ needs.frontend_test.result }}" != "skipped" ]]; then
+            echo "Frontend test job failed"
+            exit 1
+          fi
+          
+          echo "All CI checks passed successfully!"

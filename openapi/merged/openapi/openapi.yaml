@@ -1,0 +1,736 @@
+openapi: 3.0.0
+info:
+  description: API仕様
+  title: API
+  version: v1
+servers:
+- url: /
+paths:
+  /api/v1/active_sessions:
+    get:
+      description: 現在のユーザーの有効なセッションを一覧表示します。
+      operationId: getActiveSessions
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/activeSessions'
+          description: 有効なセッションの一覧を取得しました
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/forbidden'
+          description: 認証エラー
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/not_found'
+          description: ユーザーが見つかりません
+        "429":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/too_many_requests'
+          description: リクエストが多すぎます
+      summary: 有効なセッションの一覧を取得する
+      tags:
+      - ActiveSessions
+  /api/v1/active_sessions/{activeSessionId}:
+    delete:
+      description: 指定した有効なセッションを削除する
+      operationId: deleteActiveSession
+      parameters:
+      - in: path
+        name: activeSessionId
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ok'
+          description: 有効なセッションの一覧を削除しました
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/not_found'
+          description: セッションが見つかりません
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/unprocessable_entity_error'
+          description: セッションの削除に失敗しました
+        "429":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/too_many_requests'
+          description: リクエストが多すぎます
+      summary: 有効なセッションを削除する
+      tags:
+      - ActiveSession
+  /api/v1/passwords:
+    post:
+      description: パスワードリセットの手順を送信します。
+      operationId: postPasswords
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/post_password_reset_request'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ok'
+          description: パスワードリセットの手順を送信しました
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/bad_request'
+          description: バリデーションエラー
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/not_found'
+          description: ユーザーが見つかりません
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/unprocessable_entity_error'
+          description: パスワードリセットメールの送信に失敗しました
+        "429":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/too_many_requests'
+          description: リクエストが多すぎます
+      summary: パスワードリセット
+      tags:
+      - Passwords
+  /api/v1/passwords/{token}:
+    get:
+      description: トークンの有効性を検証する
+      operationId: getPassword
+      parameters:
+      - in: path
+        name: token
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ok'
+          description: パスワードリセットの手順を送信しました
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/bad_request'
+          description: リクエストエラー
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/not_found'
+          description: トークンが無効です
+        "422":
+          content:
+            application/json: {}
+          description: トークンが無効です
+        "429":
+          content:
+            application/json: {}
+          description: リクエストが多すぎます
+      summary: パスワードリセット
+      tags:
+      - Password
+    patch:
+      description: パスワードを更新する
+      operationId: patchPassword
+      parameters:
+      - in: path
+        name: token
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/patch_password_request'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ok'
+          description: パスワードを更新しました
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/bad_request'
+          description: リクエストエラー
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/not_found'
+          description: トークンが無効です
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/unprocessable_entity_error'
+          description: トークンが無効です
+        "429":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/too_many_requests'
+          description: リクエストが多すぎます
+      summary: パスワードの更新
+      tags:
+      - Password
+  /api/v1/sessions:
+    delete:
+      description: ログアウトします。
+      operationId: deleteSessions
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ok'
+          description: ログアウト成功
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/forbidden'
+          description: 認証エラー
+        "429":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/too_many_requests'
+          description: リクエストが多すぎます
+      summary: ログアウト
+      tags:
+      - Sessions
+    post:
+      description: メールアドレスとパスワードを使用してログインします。
+      operationId: postSessions
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/post_session_request'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ok'
+          description: ログイン成功
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/bad_request'
+          description: バリデーションエラー
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/unauthorized'
+          description: 認証エラー
+        "429":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/too_many_requests'
+          description: リクエストが多すぎます
+      summary: ログイン
+      tags:
+      - Sessions
+  /api/v1/users:
+    post:
+      description: ユーザーを作成する
+      operationId: postUsers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/create_user_request'
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/created'
+          description: ユーザーを作成しました
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/bad_request'
+          description: バリデーションエラー
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/not_found'
+          description: ユーザーが見つかりません
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/unprocessable_entity_error'
+          description: ユーザーを作成できません
+        "429":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/too_many_requests'
+          description: リクエストが多すぎます
+      summary: ユーザーを作成する
+      tags:
+      - Users
+  /api/v1/user/profile:
+    patch:
+      description: ユーザープロフィールを更新する
+      operationId: patchUserProfile
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/patch_user_profile_request'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ok'
+          description: ユーザープロフィールを更新しました
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/bad_request'
+          description: リクエストエラー
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/forbidden'
+          description: ログインできていない
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/not_found'
+          description: ユーザーがすでに削除済み
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/unprocessable_entity_error'
+          description: ユーザープロフィールの更新に失敗しました
+      summary: ユーザープロフィールを更新する
+      tags:
+      - User
+  /api/v1/users/me:
+    get:
+      description: ログイン中のユーザー情報を取得する
+      operationId: getUsersMe
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/user_response'
+          description: ログイン中のユーザー情報を取得する
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/bad_request'
+          description: リクエストエラー
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/unauthorized'
+          description: 認証エラー
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/forbidden'
+          description: ログインできていない
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/not_found'
+          description: ユーザーがすでに削除済み
+        "429":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/too_many_requests'
+          description: リクエストが多すぎます
+      summary: ログイン中のユーザー情報を取得する
+      tags:
+      - users
+components:
+  schemas:
+    activeSessions:
+      example:
+        activeSessions:
+        - createdAt: 2000-01-23T04:56:07.000+00:00
+          current: true
+          ipAddress: ipAddress
+          userAgent:
+            browser: browser
+            device: pc
+            platform: platform
+          location: location
+          id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        - createdAt: 2000-01-23T04:56:07.000+00:00
+          current: true
+          ipAddress: ipAddress
+          userAgent:
+            browser: browser
+            device: pc
+            platform: platform
+          location: location
+          id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+      properties:
+        activeSessions:
+          items:
+            $ref: '#/components/schemas/activeSession'
+          type: array
+      required:
+      - activeSessions
+      type: object
+    activeSession:
+      example:
+        createdAt: 2000-01-23T04:56:07.000+00:00
+        current: true
+        ipAddress: ipAddress
+        userAgent:
+          browser: browser
+          device: pc
+          platform: platform
+        location: location
+        id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+      properties:
+        id:
+          description: セッションの一意な識別子
+          format: uuid
+          type: string
+        current:
+          description: このセッションが現在のセッションであるかどうか
+          type: boolean
+        userAgent:
+          $ref: '#/components/schemas/activeSession_userAgent'
+        ipAddress:
+          description: セッションのIPアドレス
+          format: ipv4
+          type: string
+        location:
+          description: セッションが発行された場所
+          type: string
+        createdAt:
+          description: セッションが作成された日時
+          format: date-time
+          type: string
+      required:
+      - createdAt
+      - current
+      - id
+      - ipAddress
+      - location
+      - userAgent
+      type: object
+    forbidden:
+      example:
+        error: Forbidden
+      properties:
+        error:
+          example: Forbidden
+          type: string
+      required:
+      - error
+      type: object
+    not_found:
+      example:
+        error: Not Found
+      properties:
+        error:
+          example: Not Found
+          type: string
+      required:
+      - error
+      type: object
+    too_many_requests:
+      example:
+        error: Too Many Requests
+      properties:
+        error:
+          example: Too Many Requests
+          type: string
+      required:
+      - error
+      type: object
+    ok:
+      example:
+        message: 登録しました。
+      properties:
+        message:
+          example: 登録しました。
+          type: string
+      required:
+      - message
+      type: object
+    message:
+      example: 登録しました。
+      type: string
+    unprocessable_entity_error:
+      example:
+        error: Unprocessable Entity
+        errorDetails:
+        - propertyName: name
+          propertyMessage: 入力値が不正です。
+        - propertyName: name
+          propertyMessage: 入力値が不正です。
+      properties:
+        error:
+          example: Unprocessable Entity
+          type: string
+        errorDetails:
+          items:
+            $ref: '#/components/schemas/error_detail'
+          type: array
+      required:
+      - error
+      type: object
+    error_detail:
+      example:
+        propertyName: name
+        propertyMessage: 入力値が不正です。
+      properties:
+        propertyName:
+          description: エラーになったプロパティ
+          example: name
+          type: string
+        propertyMessage:
+          description: エラーメッセージ
+          example: 入力値が不正です。
+          type: string
+      required:
+      - propertyMessage
+      - propertyName
+      type: object
+    post_password_reset_request:
+      properties:
+        emailAddress:
+          example: test@example.com
+          format: email
+          type: string
+      required:
+      - emailAddress
+      type: object
+    bad_request:
+      example:
+        error: Bad Request
+      properties:
+        error:
+          example: Bad Request
+          type: string
+      required:
+      - error
+      type: object
+    patch_password_request:
+      properties:
+        password:
+          example: P4ssw0rd
+          maxLength: 255
+          minLength: 8
+          type: string
+        passwordConfirmation:
+          example: P4ssw0rd
+          maxLength: 255
+          minLength: 8
+          type: string
+      required:
+      - password
+      - passwordConfirmation
+      type: object
+    post_session_request:
+      properties:
+        emailAddress:
+          example: test@example.com
+          format: email
+          type: string
+        password:
+          example: password
+          type: string
+      required:
+      - emailAddress
+      - password
+      type: object
+    unauthorized:
+      example:
+        error: Unauthorized
+      properties:
+        error:
+          example: Unauthorized
+          type: string
+      required:
+      - error
+      type: object
+    create_user_request:
+      properties:
+        emailAddress:
+          example: user@example.com
+          format: email
+          type: string
+        password:
+          example: PassW0rd
+          type: string
+        passwordConfirmation:
+          example: PassW0rd
+          type: string
+        name:
+          example: 山田太郎
+          type: string
+      required:
+      - emailAddress
+      - name
+      - password
+      - passwordConfirmation
+      type: object
+    created:
+      example:
+        message: 登録しました。
+      properties:
+        message:
+          example: 登録しました。
+          type: string
+      required:
+      - message
+      type: object
+    patch_user_profile_request:
+      properties:
+        name:
+          example: Test User
+          type: string
+      required:
+      - name
+      type: object
+    user_response:
+      example:
+        user:
+          createdAt: 2021-01-01T00:00:00Z
+          emailAddress: user@example.com
+          profile:
+            name: 山田太郎
+          id: 123e4567-e89b-12d3-a456-426614174000
+          updatedAt: 2021-01-01T00:00:00Z
+      properties:
+        user:
+          $ref: '#/components/schemas/user'
+      type: object
+    user:
+      example:
+        createdAt: 2021-01-01T00:00:00Z
+        emailAddress: user@example.com
+        profile:
+          name: 山田太郎
+        id: 123e4567-e89b-12d3-a456-426614174000
+        updatedAt: 2021-01-01T00:00:00Z
+      properties:
+        id:
+          example: 123e4567-e89b-12d3-a456-426614174000
+          format: uuid
+          type: string
+        emailAddress:
+          example: user@example.com
+          format: email
+          type: string
+        createdAt:
+          example: 2021-01-01T00:00:00Z
+          format: date-time
+          type: string
+        updatedAt:
+          example: 2021-01-01T00:00:00Z
+          format: date-time
+          type: string
+        profile:
+          $ref: '#/components/schemas/user_profile'
+      required:
+      - createdAt
+      - emailAddress
+      - id
+      - profile
+      - updatedAt
+      type: object
+    activeSession_userAgent:
+      example:
+        browser: browser
+        device: pc
+        platform: platform
+      properties:
+        device:
+          description: デバイス名
+          enum:
+          - pc
+          - mobile
+          - tablet
+          - console
+          - others
+          type: string
+        browser:
+          description: ブラウザ名
+          type: string
+        platform:
+          description: OS名
+          type: string
+      required:
+      - browser
+      - device
+      - platform
+      type: object
+    user_profile:
+      example:
+        name: 山田太郎
+      properties:
+        name:
+          example: 山田太郎
+          type: string
+      required:
+      - name
+      type: object

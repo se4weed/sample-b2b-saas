@@ -1,0 +1,223 @@
+---
+globs: frontend/spec/*
+alwaysApply: false
+---
+
+
+## 実装ガイドライン
+
+テストは以下のように実装してください。
+
+### 必要なインポート
+
+```tsx
+import { describe, it, expect, afterEach, vi } from "vitest";
+import { render, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { BrowserRouter } from "react-router";
+import { server } from "../../setupTests"; // パスは適宜調整
+import { Layout } from "../../helpers/Layout"; // パスは適宜調整
+// Mockのmswファイルは、app/gen/api-client/*/*.mswにあるので、適宜インポートしてください。
+```
+
+### テスト実装パターン
+
+```tsx
+describe("Component", () => { // 最上位のdescribeでは、テストの対象とするComponentもしくはメソッドなどをそのまま書いてください。（基本的に英字になる）
+  const userAction = userEvent.setup() // userというModelがある都合で、userActionという変数を使用してください。
+
+  it("Componentが表示されること", async () => {
+    const mock = [
+      getPutHogeHogeMockHandler({ message: "更新しました。"}),
+      ...
+    ]
+
+    const propsA = { ... }
+
+    server.use(...mock)
+
+    render(
+      <BrowserRouter>
+        <Layout>
+          <Component
+            propsA={propsA}
+          />
+        </Layout>
+      </BrowserRouter>
+    );
+
+    expect(screen.getByText("hogehoge")).toBeInTheDocument();
+    // APIリクエストなどにより情報の取得を行ってから表示する場合、以下のようにwaitForに入れてください。
+    await waitFor(() => {
+      expect(screen.getByText("fugafuga")).toBeInTheDocument();
+    })
+  })
+
+  // フォームが存在する場合
+  it("送信ボタンを押すと、データが送信されること", async () => {
+    const mockFn = vi.fn()
+    const mock = [
+      getPutHogeHogeMockHandler(async (info) => {
+        const body = await info.request.json()
+        mockFn(body)
+        return getPutHogeHogeResponseMock()
+      }),
+      ...
+    ]
+
+    const propsA = { ... }
+
+    server.use(...mock)
+
+    render(
+      <BrowserRouter>
+        <Layout>
+          <Component
+            propsA={propsA}
+          />
+        </Layout>
+      </BrowserRouter>
+    );
+
+    const updateButton = screen.getByRole('button', { name: '更新' })
+
+    await waitFor(() => {
+      expect(updateButton).toBeInTheDocument()
+    })
+
+    await userEvent.click(updateButton)
+
+    await waitFor(() => {
+      expect(mockFn).toHaveBeenCalledWith({ hogehoge: fuga })
+    })
+
+    // toastで成功メッセージが表示されることを確認
+    await waitFor(() => {
+      expect(document.body.innerText).toContain("更新しました。");
+    })
+  })
+
+  // Propsで関数やメソッドを受け取っている場合は以下のようにしてください。
+  it("hogeHogeが呼び出されること", async () => {
+    const hogeHoge = vi.fn()
+    ...省略
+
+    render(
+      <BrowserRouter>
+        <Layout>
+          <Component
+            propsA={propsA}
+            hogeHoge={hogeHoge}
+          />
+        </Layout>
+      </BrowserRouter>
+    );
+
+    ...省略
+
+    await waitFor(async () => {
+      expect(hogeHoge).toHaveBeenCalledTimes(1)
+    })
+  })
+
+  describe("APIでエラーが発生した場合", () => {
+    it("APIでエラーが発生した場合", async () => {
+      const mockKey = getPutHogehogeMutationKey({ id: fugafuga })
+      const mockResponseBody = {
+        error: "エラーが発生しました。",
+        errorDetails: [
+          {
+            propertyMessage: "piyopiyoでエラーが発生しました。",
+            propertyName: "piyopiyo",
+          }
+        ]
+      }
+      const mock = [
+        http.put(
+          mockKey,
+          async () =>
+            new HttpResponse(JSON.stringify(mockResponseBody), {
+              status: 422,
+              headers: {
+                'Content-Type': 'application/json',
+              },
+            }),
+        ),
+        ...
+      ]
+
+      ...省略
+
+      // toastでエラーメッセージが表示されることを確認
+      await waitFor(() => {
+        expect(document.body.innerText).toContain("piyopiyoでエラーが発生しました。");
+      })
+    })
+  })
+})
+```
+
+### 重要な実装ルール
+
+- **Layout**: `frontend/spec/helpers/Layout.tsx`を必ず使用してください
+- **アサーション**: `toBeTruthy()`ではなく`toBeInTheDocument()`を使用してください
+- **文字列**: プロジェクトの規約に従い、ダブルクォートを使用してください
+- **非同期処理**: ユーザーイベントやAPI呼び出し後は`waitFor`で適切に待機してください
+- **モック**: MSWを使用してAPIレスポンスをモックしてください。orvalにより自動生成されたMockが frontend/app/gen/api-client/*/*.msw.ts にあるので、適切なものを使用してください
+- **コメント**: テストコード内でのコメントは最小限に留めてください
+
+### 実装OK/NG例
+
+#### APIリクエスト
+
+- 不要なアロー関数は使わないでください。
+
+**NG**
+```tsx
+getPostHogeMockHandler(() => ({ message: "success" }))
+```
+**OK**
+```tsx
+getPostHogeMockHandler({ message: "success" })
+```
+
+- APIのリクエスト時にエラーをthrowすることはしないでください。
+- `server.use(...mock)`になるように、mockを作ってください。
+  - `server.use()`に直接Mock Handlerを引数として指定しないでください。
+- APIでエラーが返却された場合、なんらかの形（sonner, form messageなど）でユーザーに伝えます。
+  - 伝えられているかどうかを必ずテストするようにしてください。
+
+**NG**
+```tsx
+server.use(
+  getPostUsersMockHandler(() => {
+    throw new Error("Email already exists");
+  })
+);
+```
+**OK**
+```tsx
+const mockKey = getPutHogehogeMutationKey({ id: fugafuga })
+const mockResponseBody = {
+  error: "エラーが発生しました。",
+  errorDetails: [
+    {
+      propertyMessage: "piyopiyoでエラーが発生しました。",
+      propertyName: "piyopiyo",
+    }
+  ]
+}
+const mock = [
+  http.put(
+    mockKey,
+    async () =>
+      new HttpResponse(JSON.stringify(mockResponseBody), {
+        status: 422,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }),
+  ),
+  ...
+]
+```

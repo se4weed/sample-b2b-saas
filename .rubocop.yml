@@ -1,0 +1,151 @@
+
+plugins:
+  - rubocop-performance
+  - rubocop-factory_bot
+  - rubocop-rails
+  - rubocop-rspec
+  - rubocop-rspec_rails
+
+require:
+  - ./config/initializers/inflections
+
+AllCops:
+  SuggestExtensions: false
+  # 最新のルールを適用する
+  NewCops: enable
+  # 何のルールに引っかかったか表示する
+  DisplayCopNames: true
+
+  # rubocop対象外(リポジトリ毎で調節)
+  Exclude:
+    - "Gemfile"
+    - "bin/**/*"
+    - "db/**/*"
+    - "log/**/*"
+    - "tmp/**/*"
+    - "vendor/**/*"
+    - "lib/tasks/**/*"
+    - "bin/*"
+    - "frontend/**/*"
+    - "config/environments/*"
+    - "config/initializers/**/*"
+    - "config/puma.rb"
+    - "node_modules/**/*"
+    - "openapi/**/*"
+    - "public/**/*"
+    - "storage/**/*"
+
+### ルールのカスタマイズ
+
+Metrics:
+  Enabled: false
+
+# 一行あたりの文字数
+Layout/LineLength:
+  Max: 200
+
+# メソッドの改行ルール
+Layout/MultilineMethodCallIndentation:
+  EnforcedStyle: indented
+
+# 日本語にコメントを許可
+Style/AsciiComments:
+  Enabled: false
+
+# クラスにコメントを残さなくても良い
+Style/Documentation:
+  Enabled: false
+
+# コントローラ等のモジュールをネストしての宣言
+Style/ClassAndModuleChildren:
+  Enabled: false
+
+# 文字列のfreeze
+Style/FrozenStringLiteralComment:
+  Enabled: false
+
+# ガード節の提案
+Style/GuardClause:
+  Enabled: false
+
+# 文字列のダブルクォートチェック
+Style/StringLiterals:
+  EnforcedStyle: double_quotes
+
+# ブロックの長さのチェック
+Metrics/BlockLength:
+  Enabled: false
+
+# OpenStructの使用を許可
+Style/OpenStructUse:
+  Enabled: true
+
+# 明示的にelseでnilを返すのは分かりやすいので許可する
+Style/EmptyElse:
+  EnforcedStyle: empty
+
+# メソッドの長さのチェック
+Style/SingleLineMethods:
+  AllowIfMethodIsEmpty: true
+
+# シンボルによる配列の%記法のチェック
+Style/SymbolArray:
+  Enabled: true
+
+# 文字列による配列の%記法のチェック
+Style/WordArray:
+  EnforcedStyle: percent
+  MinSize: 3
+
+# 変数名に数字を許可
+Naming/VariableNumber:
+  Enabled: false
+
+# = と == の指摘
+Lint/AssignmentInCondition:
+  Enabled: true
+
+# RSpec設定
+RSpec/ContextWording:
+  Enabled: false
+
+RSpec/NestedGroups:
+  Max: 5
+
+RSpec/MultipleExpectations:
+  Max: 10
+
+RSpec/ExampleLength:
+  Enabled: false
+
+RSpec/NamedSubject:
+  Enabled: false
+
+RSpec/AnyInstance:
+  Enabled: false
+
+RSpec/MessageSpies:
+  Enabled: false
+
+RSpec/IndexedLet:
+  Enabled: false
+
+FactoryBot/SyntaxMethods:
+  Enabled: false
+
+RSpecRails/InferredSpecType:
+  Enabled: false
+
+RSpec/MultipleMemoizedHelpers:
+  Max: 30
+
+# MEMO: let!は使うひつような場合があるので、許可する
+RSpec/LetSetup:
+  Enabled: false
+
+# MEMO: .and.not_change(Model, :count)のようにするとテストできない（No Method Errorになる）ので、許可する
+RSpec/ChangeByZero:
+  Enabled: false
+
+Rails/DynamicFindBy:
+  Enabled: false

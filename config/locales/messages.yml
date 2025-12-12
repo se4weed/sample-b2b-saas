@@ -1,0 +1,10 @@
+ja:
+  messages:
+    success:
+      create: "%{model}を作成しました。"
+      update: "%{model}を更新しました。"
+      destroy: "%{model}を削除しました。"
+    error:
+      create: "%{model}の作成に失敗しました。"
+      update: "%{model}の更新に失敗しました。"
+      destroy: "%{model}の削除に失敗しました。"

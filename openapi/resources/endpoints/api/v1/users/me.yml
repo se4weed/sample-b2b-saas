@@ -1,0 +1,43 @@
+get:
+  tags:
+    - users
+  summary: ログイン中のユーザー情報を取得する
+  description: ログイン中のユーザー情報を取得する
+  operationId: getUsersMe
+  responses:
+    '200':
+      description: ログイン中のユーザー情報を取得する
+      content:
+        application/json:
+          schema:
+            $ref: '../../../../schemas/users/me.yml#/user_response'
+    '400':
+      description: リクエストエラー
+      content:
+        application/json:
+          schema:
+            $ref: '../../../../schemas/responses.yml#/bad_request'
+    '401':
+      description: 認証エラー
+      content:
+        application/json:
+          schema:
+            $ref: '../../../../schemas/responses.yml#/unauthorized'
+    '403':
+      description: ログインできていない
+      content:
+        application/json:
+          schema:
+            $ref: '../../../../schemas/responses.yml#/forbidden'
+    '404':
+      description: ユーザーがすでに削除済み
+      content:
+        application/json:
+          schema:
+            $ref: '../../../../schemas/responses.yml#/not_found'
+    '429':
+      description: リクエストが多すぎます
+      content:
+        application/json:
+          schema:
+            $ref: '../../../../schemas/responses.yml#/too_many_requests'

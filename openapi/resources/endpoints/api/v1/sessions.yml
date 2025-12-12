@@ -1,0 +1,78 @@
+post:
+  tags:
+    - Sessions
+  summary: ログイン
+  description: メールアドレスとパスワードを使用してログインします。
+  operationId: postSessions
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '#/components/schemas/post_session_request'
+  responses:
+    '200':
+      description: ログイン成功
+      content:
+        application/json:
+          schema:
+            $ref: '../../../schemas/responses.yml#/ok'
+    '400':
+      description: バリデーションエラー
+      content:
+        application/json:
+          schema:
+            $ref: '../../../schemas/responses.yml#/bad_request'
+    '401':
+      description: 認証エラー
+      content:
+        application/json:
+          schema:
+            $ref: '../../../schemas/responses.yml#/unauthorized'
+    '429':
+      description: リクエストが多すぎます
+      content:
+        application/json:
+          schema:
+            $ref: '../../../schemas/responses.yml#/too_many_requests'
+delete:
+  tags:
+    - Sessions
+  summary: ログアウト
+  description: ログアウトします。
+  operationId: deleteSessions
+  responses:
+    '200':
+      description: ログアウト成功
+      content:
+        application/json:
+          schema:
+            $ref: '../../../schemas/responses.yml#/ok'
+    '403':
+      description: 認証エラー
+      content:
+        application/json:
+          schema:
+            $ref: '../../../schemas/responses.yml#/forbidden'
+    '429':
+      description: リクエストが多すぎます
+      content:
+        application/json:
+          schema:
+            $ref: '../../../schemas/responses.yml#/too_many_requests'
+
+components:
+  schemas:
+    post_session_request:
+      type: object
+      required:
+        - emailAddress
+        - password
+      properties:
+        emailAddress:
+          type: string
+          format: email
+          example: test@example.com
+        password:
+          type: string
+          example: password

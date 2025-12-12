@@ -1,0 +1,74 @@
+---
+globs: spec/**/*
+alwaysApply: false
+---
+
+テストは、以下のスタイルで実施してください。
+
+## Controller(request)
+- `have_http_response`は使わずに、`assert_schema_conform`を使ってください。
+- HTTPステータスを確認するitは、"return xxx" (xxxは数字)と書いてください。
+- それ以外のitは、"xxxこと"や、"xxxであること"と書いてください。
+- contextは、"xxxの場合"や、"xxxのとき"、"xxxが存在する場合"みたいな書き方をしてください。
+- get xxx_path のように、リクエストをする行の後には、改行を入れてください。
+
+```ruby
+describe XxxController, type: :request do
+  include Committee::Rails::Test::Methods
+
+  describe "GET /xxxx/xxxx" do
+    let(:user) { FactoryBot.create(:user) } # ログインが必要なエンドポイントの場合
+    let(:xxx) { FactoryBot.create(:xxxs) }
+
+    before do
+      sign_in_as(user) # ログインが必要なエンドポイントの場合
+    end
+
+    it "return 200" do # 正常系はcontextを使わない。POSTの場合は201の可能性もあり。
+      get xxx_path
+
+      assert_schema_conform(200)
+    end
+
+    it "xxxが返されること" do
+      get xxx_path
+
+      expected_body = {
+        xxx: xxxx,
+        ...
+      }
+
+      expect(response.body).to eq expected_body.to_json
+    end
+
+    context "xxxの場合" # 異常系もしくは、正常系でも、条件分岐がある場合はcontextを使う。
+      # 必要な場合はここでletでデータ作成
+
+      it "return 422" do
+        get xxx_path
+
+        assert_schema_conform(422)
+      end
+
+      it "errorが返されること"
+
+      expected_body = {
+        error: xxxx,
+        errorDetails: [
+          propertyName: xxxx,
+          propertyMessage: xxxxxx
+        ]
+      }
+
+      expect(response.body).to eq expected_body.to_json
+    end
+    ...
+  end
+end
+```
+
+## 全てのテスト共通のチェックリスト
+- [ ] 不要なコメントが存在しないこと。
+- [ ] 全ての条件分岐がカバーできていること。
+- [ ] テストが全て通ること。
+- [ ] get xxx_path のように、リクエストをする行の後には、改行があること。

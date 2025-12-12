@@ -1,0 +1,5 @@
+ja:
+  activerecord:
+    attributes:
+      user:
+        already_destroyed: 削除済みのユーザー

@@ -1,0 +1,31 @@
+get:
+  tags:
+    - ActiveSessions
+  summary: 有効なセッションの一覧を取得する
+  description: 現在のユーザーの有効なセッションを一覧表示します。
+  operationId: getActiveSessions
+  responses:
+    '200':
+      description: 有効なセッションの一覧を取得しました
+      content:
+        application/json:
+          schema:
+            $ref: '../../../schemas/active_sessions.yml#/activeSessions'
+    '403':
+      description: 認証エラー
+      content:
+        application/json:
+          schema:
+            $ref: '../../../schemas/responses.yml#/forbidden'
+    '404':
+      description: ユーザーが見つかりません
+      content:
+        application/json:
+          schema:
+            $ref: '../../../schemas/responses.yml#/not_found'
+    '429':
+      description: リクエストが多すぎます
+      content:
+        application/json:
+          schema:
+            $ref: '../../../schemas/responses.yml#/too_many_requests'

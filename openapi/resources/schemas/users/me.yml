@@ -1,0 +1,40 @@
+user_response:
+  type: object
+  properties:
+    user:
+      nullable: true
+      $ref: '#/user'
+
+user:
+  type: object
+  required:
+    - id
+    - emailAddress
+    - createdAt
+    - updatedAt
+    - profile
+  properties:
+    id:
+      type: string
+      format: uuid
+      example: 123e4567-e89b-12d3-a456-426614174000
+    emailAddress:
+      type: string
+      format: email
+      example: user@example.com
+    createdAt:
+      type: string
+      format: date-time
+      example: 2021-01-01T00:00:00Z
+    updatedAt:
+      type: string
+      format: date-time
+      example: 2021-01-01T00:00:00Z
+    profile:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          example: 山田太郎

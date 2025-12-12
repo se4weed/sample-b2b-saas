@@ -1,0 +1,60 @@
+activeSessions:
+  type: object
+  required:
+    - activeSessions
+  properties:
+    activeSessions:
+      type: array
+      items:
+        $ref: '#/activeSession'
+
+activeSession:
+  type: object
+  required:
+    - id
+    - current
+    - userAgent
+    - ipAddress
+    - location
+    - createdAt
+  properties:
+    id:
+      type: string
+      format: uuid
+      description: セッションの一意な識別子
+    current:
+      type: boolean
+      description: このセッションが現在のセッションであるかどうか
+    userAgent:
+      type: object
+      required:
+        - device
+        - browser
+        - platform
+      properties:
+        device:
+          type: string
+          description: デバイス名
+          enum:
+            - pc
+            - mobile
+            - tablet
+            - console
+            - others
+        browser:
+          type: string
+          description: ブラウザ名
+        platform:
+          type: string
+          description: OS名
+    ipAddress:
+      type: string
+      format: ipv4
+      description: セッションのIPアドレス
+    location:
+      type: string
+      description: セッションが発行された場所
+    createdAt:
+      type: string
+      format: date-time
+      description: セッションが作成された日時

@@ -1,0 +1,12 @@
+{
+  "name": "rails-react-boiler-template",
+  "private": true,
+  "version": "0.0.1",
+  "packageManager": "pnpm@10.14.0",
+  "engines": {
+    "node": ">=22.18.0"
+  },
+  "dependencies": {
+    "react-error-boundary": "^6.0.0"
+  }
+}

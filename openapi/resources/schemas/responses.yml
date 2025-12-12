@@ -1,0 +1,102 @@
+ok:
+  type: object
+  required:
+    - message
+  properties:
+    message:
+      $ref: '#/components/schemas/message'
+created:
+  type: object
+  required:
+    - message
+  properties:
+    message:
+      $ref: '#/components/schemas/message'
+bad_request:
+  type: object
+  required:
+    - error
+  properties:
+    error:
+      type: string
+      example: Bad Request
+unauthorized:
+  type: object
+  required:
+    - error
+  properties:
+    error:
+      type: string
+      example: Unauthorized
+forbidden:
+  type: object
+  required:
+    - error
+  properties:
+    error:
+      type: string
+      example: Forbidden
+not_found:
+  type: object
+  required:
+    - error
+  properties:
+    error:
+      type: string
+      example: Not Found
+unprocessable_entity_error:
+  type: object
+  required:
+    - error
+  properties:
+    error:
+      type: string
+      example: Unprocessable Entity
+    errorDetails:
+      type: array
+      items:
+        $ref: '#/components/schemas/error_detail'
+too_many_requests:
+  type: object
+  required:
+    - error
+  properties:
+    error:
+      type: string
+      example: Too Many Requests
+tea_pot:
+  type: object
+  required:
+    - message
+  properties:
+    message:
+      type: string
+      example: I'm a teapot
+internal_server_error:
+  type: object
+  required:
+    - error
+  properties:
+    error:
+      type: string
+      example: Internal Server Error
+
+components:
+  schemas:
+    message:
+      type: string
+      example: 登録しました。
+    error_detail:
+      type: object
+      required:
+        - propertyName
+        - propertyMessage
+      properties:
+        propertyName:
+          type: string
+          description: エラーになったプロパティ
+          example: name
+        propertyMessage:
+          type: string
+          description: エラーメッセージ
+          example: 入力値が不正です。
