@@ -5,6 +5,7 @@ RSpec.describe User do
     it { is_expected.to have_one(:credential).class_name("User::Credential").dependent(:destroy) }
     it { is_expected.to have_many(:sessions).dependent(:destroy) }
     it { is_expected.to have_one(:profile).class_name("User::Profile").dependent(:destroy) }
+    it { is_expected.to belong_to(:tenant).class_name("Tenant") }
   end
 
   describe "#display_name" do

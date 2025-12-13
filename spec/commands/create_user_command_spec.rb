@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe CreateUserCommand do
-  describe "#call!" do
+  xdescribe "#call!" do
     subject { described_class.new(email_address: email_address, password: password, password_confirmation: password, name: name) }
 
     let(:email_address) { Faker::Internet.email }

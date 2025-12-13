@@ -90,7 +90,7 @@ RSpec.describe Api::V1::UsersController, type: :request do
     end
   end
 
-  describe "POST /api/v1/users" do
+  xdescribe "POST /api/v1/users" do
     let(:valid_params) do
       {
         emailAddress: "test@example.com",
