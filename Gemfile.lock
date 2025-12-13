@@ -133,7 +133,7 @@ GEM
     fugit (1.11.1)
       et-orbi (~> 1, >= 1.2.11)
       raabro (~> 1.4)
-    gimei (1.5.1)
+    gimei (1.6.0)
     globalid (1.2.1)
       activesupport (>= 6.1)
     i18n (1.14.7)
