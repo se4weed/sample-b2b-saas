@@ -6,7 +6,6 @@ class CreateTenants < ActiveRecord::Migration[8.0]
       t.index :name, unique: true
     end
 
-    add_column :users, :tenant_id, :uuid, null: false
-    add_index :users, :tenant_id
+    add_reference :users, :tenant, type: :uuid, foreign_key: true, null: false
   end
 end

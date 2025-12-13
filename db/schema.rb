@@ -59,4 +59,5 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_12_025822) do
   add_foreign_key "sessions", "users"
   add_foreign_key "user_credentials", "users"
   add_foreign_key "user_profiles", "users"
+  add_foreign_key "users", "tenants"
 end
