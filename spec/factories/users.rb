@@ -1,5 +1,6 @@
 FactoryBot.define do
   factory :user do
+    tenant_id { FactoryBot.create(:tenant).id }
     after(:build) do |user|
       password = Faker::Internet.password(min_length: 8, max_length: 72)
       user.build_credential(
