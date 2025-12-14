@@ -64,8 +64,8 @@ describe("useAuthRedirect", () => {
         role: {
           id: "1",
           name: "general",
-          permissionType: "general"
-        }
+          permissionType: "general",
+        },
       };
       const { result } = renderUseAuthRedirect();
 
@@ -116,8 +116,8 @@ describe("useAuthRedirect", () => {
         role: {
           id: "1",
           name: "general",
-          permissionType: "general"
-        }
+          permissionType: "general",
+        },
       };
 
       renderUseAuthRedirect({ requireAuth: true });
@@ -160,8 +160,8 @@ describe("useAuthRedirect", () => {
         role: {
           id: "1",
           name: "general",
-          permissionType: "general"
-        }
+          permissionType: "general",
+        },
       };
       const infoSpy = vi.spyOn(toast, "info");
 
@@ -191,8 +191,8 @@ describe("useAuthRedirect", () => {
         role: {
           id: "1",
           name: "general",
-          permissionType: "general"
-        }
+          permissionType: "general",
+        },
       };
 
       renderUseAuthRedirect({
@@ -213,8 +213,8 @@ describe("useAuthRedirect", () => {
         role: {
           id: "1",
           name: "general",
-          permissionType: "general"
-        }
+          permissionType: "general",
+        },
       };
       const customMessage = "ダッシュボードに移動します";
 
@@ -236,8 +236,8 @@ describe("useAuthRedirect", () => {
         role: {
           id: "1",
           name: "general",
-          permissionType: "general"
-        }
+          permissionType: "general",
+        },
       };
 
       renderUseAuthRedirect({
@@ -268,8 +268,8 @@ describe("useAuthRedirect", () => {
         role: {
           id: "1",
           name: "general",
-          permissionType: "general"
-        }
+          permissionType: "general",
+        },
       };
 
       rerender();
@@ -302,8 +302,8 @@ describe("useAuthRedirect", () => {
         role: {
           id: "1",
           name: "general",
-          permissionType: "general"
-        }
+          permissionType: "general",
+        },
       };
 
       const { result } = renderUseAuthRedirect();
@@ -332,18 +332,18 @@ describe("useAuthRedirect", () => {
         role: {
           id: "1",
           name: "general",
-          permissionType: "general"
-        }
+          permissionType: "general",
+        },
       };
       const errorSpy = vi.spyOn(toast, "error");
 
       renderUseAuthRedirect({ requireAuth: true, requireAdmin: true }, true);
-      
+
       expect(mockNavigate).toHaveBeenCalledWith(-1);
       expect(errorSpy).toHaveBeenCalledWith("管理者権限が必要です。");
       errorSpy.mockRestore();
     });
-    
+
     it("管理者ユーザーはリダイレクトされない", () => {
       mockUser = {
         id: "1",
@@ -354,8 +354,8 @@ describe("useAuthRedirect", () => {
         role: {
           id: "1",
           name: "admin",
-          permissionType: "admin"
-        }
+          permissionType: "admin",
+        },
       };
       renderUseAuthRedirect({ requireAuth: true, requireAdmin: true });
 
