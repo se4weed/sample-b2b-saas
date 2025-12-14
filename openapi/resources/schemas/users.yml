@@ -1,0 +1,9 @@
+users:
+  type: object
+  required:
+    - users
+  properties:
+    users:
+      type: array
+      items:
+        $ref: './users/me.yml#/user'

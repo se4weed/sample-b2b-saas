@@ -1,0 +1,112 @@
+get:
+  tags:
+    - AdminUser::Users
+  summary: ユーザーの一覧を取得する
+  description: ユーザーの一覧を取得する
+  operationId: getUsers
+  responses:
+    '200':
+      description: ユーザーの一覧を取得しました
+      content:
+        application/json:
+          schema:
+            $ref: '../../../../schemas/users.yml#/users'
+    '401':
+      description: 認証エラー
+      content:
+        application/json:
+          schema:
+            $ref: '../../../../schemas/responses.yml#/unauthorized'
+    '403':
+      description: 認証エラー
+      content:
+        application/json:
+          schema:
+            $ref: '../../../../schemas/responses.yml#/forbidden'
+    '429':
+      description: リクエストが多すぎます
+      content:
+        application/json:
+          schema:
+            $ref: '../../../../schemas/responses.yml#/too_many_requests'
+
+post:
+  tags:
+    - AdminUser::Users
+  summary: ユーザー を作成する
+  description: ユーザーを作成する
+  operationId: postUser
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '#/components/schemas/post_users_request'
+  responses:
+    '200':
+      description: ユーザーを作成しました
+      content:
+        application/json:
+          schema:
+            $ref: '../../../../schemas/responses.yml#/ok'
+    '400':
+      description: リクエストエラー
+      content:
+        application/json:
+          schema:
+            $ref: '../../../../schemas/responses.yml#/bad_request'
+    '401':
+      description: 認証エラー
+      content:
+        application/json:
+          schema:
+            $ref: '../../../../schemas/responses.yml#/unauthorized'
+    '403':
+      description: 認証エラー
+      content:
+        application/json:
+          schema:
+            $ref: '../../../../schemas/responses.yml#/forbidden'
+    '422':
+      description: ユーザーの作成に失敗しました
+      content:
+        application/json:
+          schema:
+            $ref: '../../../../schemas/responses.yml#/unprocessable_entity_error'
+
+components:
+  schemas:
+    post_users_request:
+      type: object
+      required:
+        - name
+        - roleId
+        - credential
+      properties:
+        name:
+          type: string
+          example: Manager
+        roleId:
+          type: string
+          example: role_1234567890abcdef
+        credential:
+          $ref: '#/components/schemas/credential'
+    credential:
+      type: object
+      required:
+        - emailAddress
+        - password
+        - passwordConfirmation
+      properties:
+        emailAddress:
+          type: string
+          format: email
+          example: test@example.com
+        password:
+          type: string
+          format: password
+          example: Password123!
+        passwordConfirmation:
+          type: string
+          format: password
+          example: Password123!

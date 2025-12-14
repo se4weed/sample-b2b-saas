@@ -28,3 +28,7 @@ paths:
     $ref: './resources/endpoints/api/v1/admin_user/roles.yml'
   /api/v1/admin_user/roles/{roleId}:
     $ref: './resources/endpoints/api/v1/admin_user/role.yml'
+  /api/v1/admin_user/users:
+    $ref: './resources/endpoints/api/v1/admin_user/users.yml'
+  /api/v1/admin_user/users/{userId}:
+    $ref: './resources/endpoints/api/v1/admin_user/user.yml'

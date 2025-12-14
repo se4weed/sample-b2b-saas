@@ -1,0 +1,125 @@
+patch:
+  tags:
+    - AdminUser::User
+  summary: ユーザーを更新する
+  description: ユーザーを更新する
+  operationId: patchUser
+  parameters:
+    - name: userId
+      in: path
+      required: true
+      schema:
+        type: string
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '#/components/schemas/patch_user_request'
+  responses:
+    '200':
+      description: ユーザーを更新しました
+      content:
+        application/json:
+          schema:
+            $ref: '../../../../schemas/responses.yml#/ok'
+    '400':
+      description: リクエストエラー
+      content:
+        application/json:
+          schema:
+            $ref: '../../../../schemas/responses.yml#/bad_request'
+    '401':
+      description: 認証エラー
+      content:
+        application/json:
+          schema:
+            $ref: '../../../../schemas/responses.yml#/unauthorized'
+    '403':
+      description: 認証エラー
+      content:
+        application/json:
+          schema:
+            $ref: '../../../../schemas/responses.yml#/forbidden'
+    '404':
+      description: ユーザーが見つかりません
+      content:
+        application/json:
+          schema:
+            $ref: '../../../../schemas/responses.yml#/not_found'
+    '422':
+      description: ユーザーの更新に失敗しました
+      content:
+        application/json:
+          schema:
+            $ref: '../../../../schemas/responses.yml#/unprocessable_entity_error'
+
+delete:
+  tags:
+    - AdminUser::User
+  summary: ユーザーを削除する
+  description: ユーザーを削除する
+  operationId: deleteUser
+  parameters:
+    - name: userId
+      in: path
+      required: true
+      schema:
+        type: string
+  responses:
+    '200':
+      description: ユーザーを削除しました
+      content:
+        application/json:
+          schema:
+            $ref: '../../../../schemas/responses.yml#/ok'
+    '400':
+      description: リクエストエラー
+      content:
+        application/json:
+          schema:
+            $ref: '../../../../schemas/responses.yml#/bad_request'
+    '401':
+      description: 認証エラー
+      content:
+        application/json:
+          schema:
+            $ref: '../../../../schemas/responses.yml#/unauthorized'
+    '403':
+      description: 認証エラー
+      content:
+        application/json:
+          schema:
+            $ref: '../../../../schemas/responses.yml#/forbidden'
+    '404':
+      description: ユーザーが見つかりません
+      content:
+        application/json:
+          schema:
+            $ref: '../../../../schemas/responses.yml#/not_found'
+    '422':
+      description: ユーザーの削除に失敗しました
+      content:
+        application/json:
+          schema:
+            $ref: '../../../../schemas/responses.yml#/unprocessable_entity_error'
+
+components:
+  schemas:
+    patch_user_request:
+      type: object
+      required:
+        - name
+        - roleId
+        - credential
+      properties:
+        name:
+          type: string
+          description: ユーザー名
+          example: "山田太郎"
+        roleId:
+          type: string
+          description: ロールID
+          example: "role_123456"
+        credential:
+          $ref: './users.yml#/components/schemas/credential'

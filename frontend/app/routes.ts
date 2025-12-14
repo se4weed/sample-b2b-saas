@@ -4,6 +4,7 @@ export default [
   layout("components/layouts/SideBarLayout.tsx", [
     index("routes/home.tsx"),
     route("/account", "routes/account.tsx"),
+    route("/admin/users", "routes/admin/users.tsx"),
     route("/admin/roles", "routes/admin/roles.tsx"),
   ]),
   route("/about", "routes/about.tsx"),

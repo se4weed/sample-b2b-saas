@@ -119,6 +119,11 @@ const AppSideBar = ({ user }: { user: User }) => {
   ];
   const adminItems: SideBarItem[] = [
     {
+      title: "ユーザー管理",
+      url: "/admin/users",
+      icon: User2,
+    },
+    {
       title: "ロール管理",
       url: "/admin/roles",
       icon: User2,
