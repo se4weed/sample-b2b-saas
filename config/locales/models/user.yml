@@ -3,3 +3,6 @@ ja:
     attributes:
       user:
         already_destroyed: 削除済みのユーザー
+    errors:
+      messages:
+        destroy_user_self: "ユーザー自身を削除することはできません。"

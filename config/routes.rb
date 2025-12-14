@@ -11,6 +11,7 @@ Rails.application.routes.draw do
       end
       namespace :admin_user do
         resources :roles, only: %i[index create update destroy]
+        resources :users, only: %i[index create update destroy]
       end
     end
   end
