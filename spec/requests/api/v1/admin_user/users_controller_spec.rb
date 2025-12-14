@@ -14,7 +14,8 @@ RSpec.describe Api::V1::AdminUser::UsersController do
   end
 
   before do
-    allow(UserMailer).to receive_message_chain(:welcome, :deliver_later)
+    mail_double = instance_double(ActionMailer::MessageDelivery, deliver_later: nil)
+    allow(UserMailer).to receive(:welcome).and_return(mail_double)
     sign_in_as(admin_user)
   end
 
@@ -178,8 +179,9 @@ RSpec.describe Api::V1::AdminUser::UsersController do
 
     context "削除に失敗する場合" do
       it "return 422" do
+        errors_double = instance_double(ActiveModel::Errors, full_messages: ["削除できません。"])
         allow_any_instance_of(User).to receive(:destroy).and_return(false)
-        allow_any_instance_of(User).to receive_message_chain(:errors, :full_messages, :join).and_return("削除できません。")
+        allow_any_instance_of(User).to receive(:errors).and_return(errors_double)
 
         delete api_v1_admin_user_user_path(target_user)
 
