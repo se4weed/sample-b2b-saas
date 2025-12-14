@@ -4,7 +4,6 @@ Rails.application.routes.draw do
       resources :passwords, param: :token, only: %i[show create update]
       resource :sessions, only: %i[create destroy]
       resources :active_sessions, only: %i[index destroy]
-      resources :users, only: %i[create]
       get "users/me", to: "users#me", as: :users_me
       namespace :user do
         resource :profile, only: %i[update]

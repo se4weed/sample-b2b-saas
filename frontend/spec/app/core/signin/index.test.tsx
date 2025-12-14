@@ -43,11 +43,9 @@ describe("Signin", () => {
     );
 
     expect(screen.getAllByText("ログイン")[0]).toBeInTheDocument();
-    expect(screen.getByText(/アカウントをお持ちでない方は/)).toBeInTheDocument();
     expect(screen.getByLabelText("メールアドレス")).toBeInTheDocument();
     expect(screen.getByLabelText("パスワード")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "ログイン" })).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "アカウント登録" })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "パスワードをリセット" })).toBeInTheDocument();
   });
 
@@ -202,19 +200,6 @@ describe("Signin", () => {
       const spinningElement = document.querySelector(".animate-spin");
       expect(spinningElement).toBeInTheDocument();
     });
-  });
-
-  it("サインアップページへのリンクが正しいこと", async () => {
-    render(
-      <BrowserRouter>
-        <Layout>
-          <Signin />
-        </Layout>
-      </BrowserRouter>
-    );
-
-    const signupLink = screen.getByRole("link", { name: "アカウント登録" });
-    expect(signupLink).toHaveAttribute("href", "/signup");
   });
 
   it("パスワードリセットページへのリンクが正しいこと", async () => {

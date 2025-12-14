@@ -169,7 +169,7 @@ rails-react-boiler-template/
 │   │   ├── routes/*.tsx            # 画面ルート
 │   │   ├── components/ui/*         # shadcn/ui プリミティブ
 │   │   ├── components/shared/*     # 共有UI（アトム/分子）
-│   │   ├── core/*                  # 機能単位（signin, signup など）
+│   │   ├── core/*                  # 機能単位（signin など）
 │   │   ├── hooks/*                 # React Hooks
 │   │   ├── lib/*                   # ユーティリティ
 │   │   ├── globalStates/*          # グローバル状態（SWR 等）
