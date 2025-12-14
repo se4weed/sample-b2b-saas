@@ -10,9 +10,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_12_12_025822) do
+ActiveRecord::Schema[8.0].define(version: 2025_12_13_150152) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+
+  create_table "roles", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "tenant_id", null: false
+    t.string "name", null: false
+    t.integer "permission_type", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["tenant_id", "name"], name: "index_roles_on_tenant_id_and_name", unique: true
+    t.index ["tenant_id"], name: "index_roles_on_tenant_id"
+  end
 
   create_table "sessions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "user_id", null: false
@@ -53,11 +63,15 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_12_025822) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.uuid "tenant_id", null: false
+    t.uuid "role_id", null: false
+    t.index ["role_id"], name: "index_users_on_role_id"
     t.index ["tenant_id"], name: "index_users_on_tenant_id"
   end
 
+  add_foreign_key "roles", "tenants"
   add_foreign_key "sessions", "users"
   add_foreign_key "user_credentials", "users"
   add_foreign_key "user_profiles", "users"
+  add_foreign_key "users", "roles"
   add_foreign_key "users", "tenants"
 end

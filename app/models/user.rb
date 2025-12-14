@@ -4,6 +4,7 @@ class User < ApplicationRecord
   has_one :profile, class_name: "User::Profile", dependent: :destroy
 
   belongs_to :tenant
+  belongs_to :role
 
   def display_name
     profile&.name || I18n.t("activerecord.attributes.user.already_destroyed")
