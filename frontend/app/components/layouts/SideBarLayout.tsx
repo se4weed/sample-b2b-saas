@@ -117,6 +117,14 @@ const AppSideBar = ({ user }: { user: User }) => {
       icon: HomeIcon,
     },
   ];
+  const adminItems: SideBarItem[] = [
+    {
+      title: "ロール管理",
+      url: "/admin/roles",
+      icon: User2,
+    },
+  ];
+
   const { open } = useSidebar();
   const { trigger: mutateSignOut } = useDeleteSessions();
   const options = {
@@ -163,6 +171,25 @@ const AppSideBar = ({ user }: { user: User }) => {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
+        {user.role.permissionType === "admin" && (
+          <SidebarGroup>
+            <SidebarGroupLabel>管理者設定</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {adminItems.map((item) => (
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton asChild>
+                      <Link to={item.url}>
+                        <item.icon />
+                        <span>{item.title}</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        )}
       </SidebarContent>
       <SidebarFooter>
         <SidebarMenu>

@@ -6,6 +6,8 @@ import { useCurrentUserState } from "~/globalStates/user";
 type AuthRedirectOptions = {
   /** 認証が必要なページかどうか */
   requireAuth?: boolean;
+  /** 管理者である必要があるかどうか */
+  requireAdmin?: boolean;
   /** 認証済みユーザーをリダイレクトするかどうか */
   redirectIfAuthenticated?: boolean;
   /** リダイレクト先のパス */
@@ -22,6 +24,7 @@ const DEFAULT_REDIRECT_PATH = "/";
 export const useAuthRedirect = (options: AuthRedirectOptions = {}) => {
   const {
     requireAuth = false,
+    requireAdmin = false,
     redirectIfAuthenticated = false,
     redirectTo = DEFAULT_REDIRECT_PATH,
     showToast = true,
@@ -36,6 +39,7 @@ export const useAuthRedirect = (options: AuthRedirectOptions = {}) => {
   const isAuthenticated = !!user;
   const hasHandledRef = useRef(false);
   const previousAuthStatusRef = useRef<boolean | undefined>(undefined);
+  const isAdmin = user?.role.permissionType === "admin";
 
   useEffect(() => {
     if (isLoading) {
@@ -73,6 +77,21 @@ export const useAuthRedirect = (options: AuthRedirectOptions = {}) => {
         }
 
         navigate(redirectTo);
+      }
+
+      handled = true;
+    }
+
+    if (!handled && requireAuth && isAuthenticated && requireAdmin && !isAdmin) {
+      if (!hasHandledRef.current) {
+        hasHandledRef.current = true;
+
+        if (showToast) {
+          toast.error(toastMessage ?? "管理者権限が必要です。");
+        }
+
+        // 一つ前のページに戻る
+        navigate(-1);
       }
 
       handled = true;
