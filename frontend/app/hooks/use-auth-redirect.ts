@@ -66,6 +66,21 @@ export const useAuthRedirect = (options: AuthRedirectOptions = {}) => {
       handled = true;
     }
 
+    if (!handled && requireAuth && isAuthenticated && requireAdmin && !isAdmin) {
+      if (!hasHandledRef.current) {
+        hasHandledRef.current = true;
+
+        if (showToast) {
+          toast.error(toastMessage ?? "管理者権限が必要です。");
+        }
+
+        // 一つ前のページに戻る
+        navigate(-1);
+      }
+
+      handled = true;
+    }
+
     if (!handled && redirectIfAuthenticated && isAuthenticated) {
       if (!hasHandledRef.current) {
         hasHandledRef.current = true;
@@ -77,21 +92,6 @@ export const useAuthRedirect = (options: AuthRedirectOptions = {}) => {
         }
 
         navigate(redirectTo);
-      }
-
-      handled = true;
-    }
-
-    if (!handled && requireAuth && isAuthenticated && requireAdmin && !isAdmin) {
-      if (!hasHandledRef.current) {
-        hasHandledRef.current = true;
-
-        if (showToast) {
-          toast.error(toastMessage ?? "管理者権限が必要です。");
-        }
-
-        // 一つ前のページに戻る
-        navigate(-1);
       }
 
       handled = true;
