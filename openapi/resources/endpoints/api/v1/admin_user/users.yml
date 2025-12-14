@@ -68,7 +68,7 @@ post:
           schema:
             $ref: '../../../../schemas/responses.yml#/forbidden'
     '422':
-      description: ロールの作成に失敗しました
+      description: ユーザーの作成に失敗しました
       content:
         application/json:
           schema:
