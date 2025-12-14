@@ -1,23 +1,23 @@
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '~/components/ui/dialog'
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '~/components/ui/form';
-import type { Ok, Role, UnprocessableEntityError } from '~/gen/api-client/models';
-import { Schema } from './schema.zod';
-import z from 'zod';
-import { Input } from '~/components/ui/input';
-import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from '~/components/ui/select';
-import { Button } from '~/components/ui/button';
-import { usePatchRole } from '~/gen/api-client/role/role';
-import type { AxiosError, AxiosResponse } from 'axios';
-import { toast } from 'sonner';
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "~/components/ui/dialog";
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "~/components/ui/form";
+import type { Ok, Role, UnprocessableEntityError } from "~/gen/api-client/models";
+import { Schema } from "./schema.zod";
+import z from "zod";
+import { Input } from "~/components/ui/input";
+import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from "~/components/ui/select";
+import { Button } from "~/components/ui/button";
+import { usePatchRole } from "~/gen/api-client/role/role";
+import type { AxiosError, AxiosResponse } from "axios";
+import { toast } from "sonner";
 
 type Props = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   role: Role;
   mutateRoles: () => void;
-}
+};
 export const EditDialog = ({ open, onOpenChange, role, mutateRoles }: Props) => {
   const form = useForm<z.infer<typeof Schema>>({
     resolver: zodResolver(Schema),
@@ -40,12 +40,12 @@ export const EditDialog = ({ open, onOpenChange, role, mutateRoles }: Props) => 
         toast.error("予期せぬエラーが発生しました。");
       }
     },
-  }
+  };
   const { trigger } = usePatchRole({ roleId: role.id }, { swr: options });
 
   const handleSubmit = (values: z.infer<typeof Schema>) => {
     trigger(values);
-  }
+  };
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
@@ -76,11 +76,8 @@ export const EditDialog = ({ open, onOpenChange, role, mutateRoles }: Props) => 
                   <FormLabel>権限タイプ</FormLabel>
                   <FormDescription>ロールの権限タイプを選択してください。</FormDescription>
                   <FormControl>
-                    <Select
-                      value={field.value}
-                      onValueChange={field.onChange}
-                    >
-                      <SelectTrigger className='w-32'>
+                    <Select value={field.value} onValueChange={field.onChange}>
+                      <SelectTrigger className="w-32">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -93,13 +90,15 @@ export const EditDialog = ({ open, onOpenChange, role, mutateRoles }: Props) => 
                 </FormItem>
               )}
             />
-            <FormItem className='w-full justify-end flex space-x-1'>
-              <Button variant="outline" onClick={() => onOpenChange(false)}>キャンセル</Button>
+            <FormItem className="w-full justify-end flex space-x-1">
+              <Button variant="outline" onClick={() => onOpenChange(false)}>
+                キャンセル
+              </Button>
               <Button type="submit">更新</Button>
             </FormItem>
           </form>
         </Form>
       </DialogContent>
     </Dialog>
-  )
-}
+  );
+};

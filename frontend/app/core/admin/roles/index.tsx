@@ -26,17 +26,19 @@ const Roles = ({ user }: Props) => {
   const handleEdit = (role: Role) => {
     setTargetRole(role);
     setIsEditDialogOpen(true);
-  }
+  };
 
   const handleDelete = (role: Role) => {
     setTargetRole(role);
     setIsDeleteDialogOpen(true);
-  }
+  };
   return (
     <Container className="space-y-4">
       <div className="flex items-end justify-between">
         <Text type="title">ロール一覧</Text>
-        <Button variant="outline" onClick={() => setIsCreateDialogOpen(true)}>ロールの作成</Button>
+        <Button variant="outline" onClick={() => setIsCreateDialogOpen(true)}>
+          ロールの作成
+        </Button>
       </div>
       <Table>
         <TableHeader>
@@ -66,8 +68,22 @@ const Roles = ({ user }: Props) => {
           )}
         </TableBody>
       </Table>
-      {targetRole && (<EditDialog open={isEditDialogOpen} onOpenChange={(open) => setIsEditDialogOpen(open)} role={targetRole} mutateRoles={mutateRoles} />)}
-      {targetRole && (<DeleteDialog open={isDeleteDialogOpen} onOpenChange={(open) => setIsDeleteDialogOpen(open)} role={targetRole} mutateRoles={mutateRoles} />)}
+      {targetRole && (
+        <EditDialog
+          open={isEditDialogOpen}
+          onOpenChange={(open) => setIsEditDialogOpen(open)}
+          role={targetRole}
+          mutateRoles={mutateRoles}
+        />
+      )}
+      {targetRole && (
+        <DeleteDialog
+          open={isDeleteDialogOpen}
+          onOpenChange={(open) => setIsDeleteDialogOpen(open)}
+          role={targetRole}
+          mutateRoles={mutateRoles}
+        />
+      )}
       <CreateDialog open={isCreateDialogOpen} onOpenChange={(open) => setIsCreateDialogOpen(open)} mutateRoles={mutateRoles} />
     </Container>
   );
