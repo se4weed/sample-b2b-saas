@@ -24,8 +24,9 @@ RSpec.describe Role do
       it "管理者ロールが一つだけの場合に一般ロールへ変更するとバリデーションエラーとなること" do
         admin_role.permission_type = :general
 
-        expect(admin_role).to be_invalid
-        expect(admin_role.errors[:base]).to include("少なくとも1つの管理者ロールが必要です。")
+        expect(admin_role).not_to be_valid
+        expected_message = I18n.t("activerecord.errors.messages.required_one", attribute: described_class.human_attribute_name(:admin_role))
+        expect(admin_role.errors[:base]).to include(expected_message)
       end
 
       it "別の管理者ロールが存在する場合は変更できること" do

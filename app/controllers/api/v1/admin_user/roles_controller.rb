@@ -23,10 +23,10 @@ class Api::V1::AdminUser::RolesController < Api::V1::AdminUser::ApplicationContr
 
     if role.save
       render status: :ok, json: {
-        message: "ロールを作成しました。"
+        message: I18n.t("messages.success.create", model: Role.model_name.human)
       }
     else
-      render json: { error: "ロールの作成に失敗しました。" }, status: :unprocessable_entity
+      render json: { error: role.errors.full_messages.join("\n") }, status: :unprocessable_entity
     end
   end
 
@@ -35,7 +35,7 @@ class Api::V1::AdminUser::RolesController < Api::V1::AdminUser::ApplicationContr
 
     if role.update(name: role_params[:name], permission_type: role_params[:permissionType])
       render status: :ok, json: {
-        message: "ロールを更新しました。"
+        message: I18n.t("messages.success.update", model: Role.model_name.human)
       }
     else
       render json: { error: role.errors.full_messages.join("\n") }, status: :unprocessable_entity
@@ -47,10 +47,10 @@ class Api::V1::AdminUser::RolesController < Api::V1::AdminUser::ApplicationContr
 
     if role.destroy
       render status: :ok, json: {
-        message: "ロールを削除しました。"
+        message: I18n.t("messages.success.destroy", model: Role.model_name.human)
       }
     else
-      render json: { error: "このロールは使用されているため、削除できません。" }, status: :unprocessable_entity
+      render json: { error: role.errors.full_messages.join("\n") }, status: :unprocessable_entity
     end
   end
 

@@ -2,4 +2,7 @@ ja:
   activerecord:
     errors:
       messages:
-        taken: "はすでに使用されています。"
+        taken: "がすでに使用されています。"
+        required_one: "%{attribute}は少なくとも1つ必要です。"
+        restrict_dependent_destroy:
+          has_many: "%{record}がこの%{model}を使用しているため、削除できません。"

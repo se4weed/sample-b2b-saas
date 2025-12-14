@@ -102,14 +102,14 @@ RSpec.describe Api::V1::AdminUser::RolesController, type: :request do
           name: "New Role"
         }
 
-        expected_body = { error: "パラメータ（permissionType）が不足しています。" }
+        expected_body = { error: "パラメータ（権限）が不足しています。" }
         expect(response.body).to eq(expected_body.to_json)
       end
     end
 
     context "ロールの作成に失敗する場合" do
       before do
-        allow_any_instance_of(Role).to receive(:save).and_return(false)
+        Role.last.update(name: "New Role")
       end
 
       it "return 422" do
@@ -127,7 +127,7 @@ RSpec.describe Api::V1::AdminUser::RolesController, type: :request do
           permissionType: "general"
         }
 
-        expected_body = { error: "ロールの作成に失敗しました。" }
+        expected_body = { error: "ロール名 がすでに使用されています。" }
         expect(response.body).to eq(expected_body.to_json)
       end
     end
@@ -178,7 +178,7 @@ RSpec.describe Api::V1::AdminUser::RolesController, type: :request do
           permissionType: "general"
         }
 
-        expected_body = { error: "少なくとも1つの管理者ロールが必要です。" }
+        expected_body = { error: "権限が管理者のロールは少なくとも1つ必要です。" }
         expect(response.body).to eq(expected_body.to_json)
       end
     end
@@ -197,7 +197,7 @@ RSpec.describe Api::V1::AdminUser::RolesController, type: :request do
           name: "Updated Name"
         }
 
-        expected_body = { error: "パラメータ（permissionType）が不足しています。" }
+        expected_body = { error: "パラメータ（権限）が不足しています。" }
         expect(response.body).to eq(expected_body.to_json)
       end
     end
@@ -218,7 +218,7 @@ RSpec.describe Api::V1::AdminUser::RolesController, type: :request do
           permissionType: "admin"
         }
 
-        expected_body = { error: "Roleが見つかりません。" }
+        expected_body = { error: "ロールが見つかりません。" }
         expect(response.body).to eq(expected_body.to_json)
       end
     end
@@ -258,7 +258,7 @@ RSpec.describe Api::V1::AdminUser::RolesController, type: :request do
       it "エラーメッセージが返されること" do
         delete api_v1_admin_user_role_path(role_to_delete)
 
-        expected_body = { error: "このロールは使用されているため、削除できません。" }
+        expected_body = { error: "ユーザーがこのロールを使用しているため、削除できません。" }
         expect(response.body).to eq(expected_body.to_json)
       end
     end
@@ -273,7 +273,7 @@ RSpec.describe Api::V1::AdminUser::RolesController, type: :request do
       it "エラーメッセージが返されること" do
         delete api_v1_admin_user_role_path(id: "nonexistent")
 
-        expected_body = { error: "Roleが見つかりません。" }
+        expected_body = { error: "ロールが見つかりません。" }
         expect(response.body).to eq(expected_body.to_json)
       end
     end

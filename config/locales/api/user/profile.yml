@@ -1,0 +1,5 @@
+ja:
+  api:
+    user/profile:
+      parameters:
+        name: ロール名

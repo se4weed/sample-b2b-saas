@@ -184,7 +184,7 @@ RSpec.describe Api::V1::PasswordsController, type: :request do
     it "成功メッセージが返されること" do
       patch api_v1_password_path(token), params: valid_params
 
-      expected_body = { message: "パスワードを更新しました。ログインしてください。" }
+      expected_body = { message: "認証情報を更新しました。" }
       expect(response.body).to eq(expected_body.to_json)
     end
 
@@ -211,7 +211,7 @@ RSpec.describe Api::V1::PasswordsController, type: :request do
       it "エラーメッセージが返されること" do
         patch api_v1_password_path(token), params: invalid_params
 
-        expected_body = { error: "パスワードが一致しないか、値が不正です。" }
+        expected_body = { error: "認証情報の更新に失敗しました。" }
         expect(response.body).to eq(expected_body.to_json)
       end
 

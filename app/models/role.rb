@@ -13,6 +13,8 @@ class Role < ApplicationRecord
   private
 
   def ensure_admin_role_remains
-    errors.add(:base, "少なくとも1つの管理者ロールが必要です。") if Role.where(permission_type: :admin, tenant_id: tenant_id).count <= 1 && permission_type_changed? && permission_type_was == "admin"
+    if Role.where(permission_type: :admin, tenant_id: tenant_id).count <= 1 && permission_type_changed? && permission_type_was == "admin"
+      errors.add(:base, I18n.t("activerecord.errors.messages.required_one", attribute: Role.human_attribute_name(:admin_role)))
+    end
   end
 end

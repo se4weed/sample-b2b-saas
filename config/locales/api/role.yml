@@ -1,0 +1,6 @@
+ja:
+  api:
+    admin_user/roles:
+      parameters:
+        name: ロール名
+        permissionType: 権限
