@@ -1,4 +1,4 @@
-import { LoaderCircle, SquareArrowDown, TriangleIcon } from "lucide-react";
+import { LoaderCircle, SquareArrowDown } from "lucide-react";
 import { useState } from "react";
 import { Container } from "~/components/shared/container";
 import Text from "~/components/shared/text";

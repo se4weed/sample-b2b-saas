@@ -2,7 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "~/components/ui/dialog";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "~/components/ui/form";
-import type { Ok, Role, UnprocessableEntityError } from "~/gen/api-client/models";
+import type { Ok, UnprocessableEntityError } from "~/gen/api-client/models";
 import { Schema } from "./schema.zod";
 import z from "zod";
 import { Input } from "~/components/ui/input";

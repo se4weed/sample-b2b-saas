@@ -8,7 +8,6 @@ import { useDeleteRole } from "~/gen/api-client/role/role";
 import Text from "~/components/shared/text";
 import { FieldSet } from "~/components/shared/fieldset";
 import { parsePermissionType } from ".";
-import { useEffect, useState } from "react";
 
 type Props = {
   open: boolean;
