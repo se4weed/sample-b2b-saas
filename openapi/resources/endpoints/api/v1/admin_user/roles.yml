@@ -1,0 +1,89 @@
+get:
+  tags:
+    - Roles
+  summary: ロールの一覧を取得する
+  description: ロールの一覧を取得する
+  operationId: getRoles
+  responses:
+    '200':
+      description: ロールの一覧を取得しました
+      content:
+        application/json:
+          schema:
+            $ref: '../../../../schemas/roles.yml#/roles'
+    '401':
+      description: 認証エラー
+      content:
+        application/json:
+          schema:
+            $ref: '../../../../schemas/responses.yml#/unauthorized'
+    '403':
+      description: 認証エラー
+      content:
+        application/json:
+          schema:
+            $ref: '../../../../schemas/responses.yml#/forbidden'
+    '429':
+      description: リクエストが多すぎます
+      content:
+        application/json:
+          schema:
+            $ref: '../../../../schemas/responses.yml#/too_many_requests'
+
+post:
+  tags:
+    - Roles
+  summary: ロールを作成する
+  description: ロールを作成する
+  operationId: postRoles
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '#/components/schemas/post_roles_request'
+  responses:
+    '200':
+      description: ロールを作成しました
+      content:
+        application/json:
+          schema:
+            $ref: '../../../../schemas/responses.yml#/ok'
+    '400':
+      description: リクエストエラー
+      content:
+        application/json:
+          schema:
+            $ref: '../../../../schemas/responses.yml#/bad_request'
+    '401':
+      description: 認証エラー
+      content:
+        application/json:
+          schema:
+            $ref: '../../../../schemas/responses.yml#/unauthorized'
+    '403':
+      description: 認証エラー
+      content:
+        application/json:
+          schema:
+            $ref: '../../../../schemas/responses.yml#/forbidden'
+    '422':
+      description: ロールの作成に失敗しました
+      content:
+        application/json:
+          schema:
+            $ref: '../../../../schemas/responses.yml#/unprocessable_entity_error'
+
+components:
+  schemas:
+    post_roles_request:
+      type: object
+      required:
+        - name
+        - permissionType
+      properties:
+        name:
+          type: string
+          example: Manager
+        permissionType:
+          $ref: '../../../../schemas/roles.yml#/permission_type'

@@ -404,6 +404,180 @@ paths:
       summary: ログイン中のユーザー情報を取得する
       tags:
       - users
+  /api/v1/admin_user/roles:
+    get:
+      description: ロールの一覧を取得する
+      operationId: getRoles
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/roles'
+          description: ロールの一覧を取得しました
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/unauthorized'
+          description: 認証エラー
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/forbidden'
+          description: 認証エラー
+        "429":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/too_many_requests'
+          description: リクエストが多すぎます
+      summary: ロールの一覧を取得する
+      tags:
+      - Roles
+    post:
+      description: ロールを作成する
+      operationId: postRoles
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/post_roles_request'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ok'
+          description: ロールを作成しました
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/bad_request'
+          description: リクエストエラー
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/unauthorized'
+          description: 認証エラー
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/forbidden'
+          description: 認証エラー
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/unprocessable_entity_error'
+          description: ロールの作成に失敗しました
+      summary: ロールを作成する
+      tags:
+      - Roles
+  /api/v1/admin_user/roles/{roleId}:
+    delete:
+      description: ロールを削除する
+      operationId: deleteRole
+      parameters:
+      - in: path
+        name: roleId
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ok'
+          description: ロールを削除しました
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/unauthorized'
+          description: 認証エラー
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/forbidden'
+          description: 認証エラー
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/not_found'
+          description: ロールが見つかりません
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/unprocessable_entity_error'
+          description: ロールの削除に失敗しました
+      summary: ロールを削除する
+      tags:
+      - Role
+    patch:
+      description: ロールを更新する
+      operationId: patchRole
+      parameters:
+      - in: path
+        name: roleId
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/patch_roles_request'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ok'
+          description: ロールを更新しました
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/bad_request'
+          description: リクエストエラー
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/unauthorized'
+          description: 認証エラー
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/forbidden'
+          description: 認証エラー
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/not_found'
+          description: ロールが見つかりません
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/unprocessable_entity_error'
+          description: ロールの更新に失敗しました
+      summary: ロールを更新する
+      tags:
+      - Role
 components:
   schemas:
     activeSessions:
@@ -697,6 +871,71 @@ components:
       - id
       - profile
       - updatedAt
+      type: object
+    post_roles_request:
+      properties:
+        name:
+          example: Manager
+          type: string
+        permissionType:
+          $ref: '#/components/schemas/permission_type'
+      required:
+      - name
+      - permissionType
+      type: object
+    roles:
+      example:
+        roles:
+        - permissionType: null
+          name: name
+          id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        - permissionType: null
+          name: name
+          id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+      properties:
+        roles:
+          items:
+            $ref: '#/components/schemas/role'
+          type: array
+      required:
+      - roles
+      type: object
+    role:
+      example:
+        permissionType: null
+        name: name
+        id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+      properties:
+        id:
+          description: 役割の一意な識別子
+          format: uuid
+          type: string
+        name:
+          description: 役割名
+          type: string
+        permissionType:
+          $ref: '#/components/schemas/permission_type'
+      required:
+      - id
+      - name
+      - permissionType
+      type: object
+    permission_type:
+      description: 権限タイプ
+      enum:
+      - general
+      - admin
+      type: string
+    patch_roles_request:
+      properties:
+        name:
+          example: Manager
+          type: string
+        permissionType:
+          $ref: '#/components/schemas/permission_type'
+      required:
+      - name
+      - permissionType
       type: object
     activeSession_userAgent:
       example:

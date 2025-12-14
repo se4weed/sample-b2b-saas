@@ -1,0 +1,33 @@
+roles:
+  type: object
+  required:
+    - roles
+  properties:
+    roles:
+      type: array
+      items:
+        $ref: '#/role'
+
+role:
+  type: object
+  required:
+    - id
+    - name
+    - permissionType
+  properties:
+    id:
+      type: string
+      format: uuid
+      description: 役割の一意な識別子
+    name:
+      type: string
+      description: 役割名
+    permissionType:
+      $ref: '#/permission_type'
+
+permission_type:
+  type: string
+  description: 権限タイプ
+  enum:
+    - general
+    - admin

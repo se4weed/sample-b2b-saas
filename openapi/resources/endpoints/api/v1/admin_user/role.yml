@@ -1,0 +1,113 @@
+patch:
+  tags:
+    - Role
+  summary: ロールを更新する
+  description: ロールを更新する
+  operationId: patchRole
+  parameters:
+    - name: roleId
+      in: path
+      required: true
+      schema:
+        type: string
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '#/components/schemas/patch_roles_request'
+  responses:
+    '200':
+      description: ロールを更新しました
+      content:
+        application/json:
+          schema:
+            $ref: '../../../../schemas/responses.yml#/ok'
+    '400':
+      description: リクエストエラー
+      content:
+        application/json:
+          schema:
+            $ref: '../../../../schemas/responses.yml#/bad_request'
+    '401':
+      description: 認証エラー
+      content:
+        application/json:
+          schema:
+            $ref: '../../../../schemas/responses.yml#/unauthorized'
+    '403':
+      description: 認証エラー
+      content:
+        application/json:
+          schema:
+            $ref: '../../../../schemas/responses.yml#/forbidden'
+    '404':
+      description: ロールが見つかりません
+      content:
+        application/json:
+          schema:
+            $ref: '../../../../schemas/responses.yml#/not_found'
+    '422':
+      description: ロールの更新に失敗しました
+      content:
+        application/json:
+          schema:
+            $ref: '../../../../schemas/responses.yml#/unprocessable_entity_error'
+
+delete:
+  tags:
+    - Role
+  summary: ロールを削除する
+  description: ロールを削除する
+  operationId: deleteRole
+  parameters:
+    - name: roleId
+      in: path
+      required: true
+      schema:
+        type: string
+  responses:
+    '200':
+      description: ロールを削除しました
+      content:
+        application/json:
+          schema:
+            $ref: '../../../../schemas/responses.yml#/ok'
+    '401':
+      description: 認証エラー
+      content:
+        application/json:
+          schema:
+            $ref: '../../../../schemas/responses.yml#/unauthorized'
+    '403':
+      description: 認証エラー
+      content:
+        application/json:
+          schema:
+            $ref: '../../../../schemas/responses.yml#/forbidden'
+    '404':
+      description: ロールが見つかりません
+      content:
+        application/json:
+          schema:
+            $ref: '../../../../schemas/responses.yml#/not_found'
+    '422':
+      description: ロールの削除に失敗しました
+      content:
+        application/json:
+          schema:
+            $ref: '../../../../schemas/responses.yml#/unprocessable_entity_error'
+
+components:
+  schemas:
+    patch_roles_request:
+      type: object
+      required:
+        - name
+        - permissionType
+      properties:
+        name:
+          type: string
+          example: Manager
+        permissionType:
+          $ref: '../../../../schemas/roles.yml#/permission_type'
