@@ -1,8 +1,5 @@
 class Api::V1::UsersController < Api::V1::ApplicationController
-  allow_unauthenticated_access only: %i[create me]
-
-  rate_limit to: 10, within: 3.minutes, only: :create, with: -> { rate_limit_exceeded }
-
+  allow_unauthenticated_access only: %i[me]
   def me
     resume_session
     user = current_user
@@ -29,24 +26,7 @@ class Api::V1::UsersController < Api::V1::ApplicationController
     end
   end
 
-  def create
-    user = CreateUserCommand.new(
-      email_address: create_user_params[:emailAddress],
-      password: create_user_params[:password],
-      password_confirmation: create_user_params[:passwordConfirmation],
-      name: create_user_params[:name]
-    ).call!
-    UserMailer.welcome(user).deliver_later
-    start_new_session_for user
-
-    render status: :created, json: { message: I18n.t("messages.success.create", model: User.model_name.human) }
-  end
-
   private
-
-  def rate_limit_exceeded
-    render status: :too_many_requests, json: { error: I18n.t("messages.error.too_many_requests") }
-  end
 
   def create_user_params
     params.require(%i[emailAddress password passwordConfirmation name])

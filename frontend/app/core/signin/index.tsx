@@ -55,13 +55,6 @@ const Signin = () => {
             <Text type="blockTitle" weight="semibold">
               ログイン
             </Text>
-            <Text type="description">
-              アカウントをお持ちでない方は
-              <Link to="/signup" className="text-link">
-                アカウント登録
-              </Link>
-              してください。
-            </Text>
           </div>
         </div>
         <SignInForm form={form} onSubmit={onSubmit} isMutating={isMutating} />
@@ -75,13 +68,6 @@ const Signin = () => {
           <WideLogo className="w-[400px]" />
           <div className="space-y-2">
             <CardTitle>ログイン</CardTitle>
-            <CardDescription className="gap-0.5">
-              アカウントをお持ちでない方は
-              <Link to="/signup" className="text-link">
-                アカウント登録
-              </Link>
-              してください。
-            </CardDescription>
           </div>
         </CardHeader>
         <CardContent>

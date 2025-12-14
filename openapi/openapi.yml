@@ -18,8 +18,6 @@ paths:
     $ref: './resources/endpoints/api/v1/password.yml'
   /api/v1/sessions:
     $ref: './resources/endpoints/api/v1/sessions.yml'
-  /api/v1/users:
-    $ref: './resources/endpoints/api/v1/users.yml'
   /api/v1/user/profile:
     $ref: './resources/endpoints/api/v1/user/profile.yml'
   /api/v1/users/me:

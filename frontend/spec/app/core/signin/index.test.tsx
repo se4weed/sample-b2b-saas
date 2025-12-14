@@ -204,19 +204,6 @@ describe("Signin", () => {
     });
   });
 
-  it("サインアップページへのリンクが正しいこと", async () => {
-    render(
-      <BrowserRouter>
-        <Layout>
-          <Signin />
-        </Layout>
-      </BrowserRouter>
-    );
-
-    const signupLink = screen.getByRole("link", { name: "アカウント登録" });
-    expect(signupLink).toHaveAttribute("href", "/signup");
-  });
-
   it("パスワードリセットページへのリンクが正しいこと", async () => {
     render(
       <BrowserRouter>
