@@ -68,7 +68,7 @@ export const CreateDialog = ({ open, onOpenChange, roles, mutateUsers }: Props) 
   const { trigger, isMutating } = usePostUser({ swr: mutationOptions });
 
   const handleSubmit = (values: z.infer<typeof Schema>) => {
-    const payload: (PostUsersRequest & { roleId: string }) = {
+    const payload: PostUsersRequest & { roleId: string } = {
       name: values.name,
       roleId: values.roleId,
       credential: values.credential,
