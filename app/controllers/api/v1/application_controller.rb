@@ -12,7 +12,7 @@ class Api::V1::ApplicationController < Api::ApplicationController
   end
 
   def render_not_found_error(exception)
-    render status: :not_found, json: { error: exception.message }
+    render status: :not_found, json: { error: "#{exception.model}が見つかりません。" }
   end
 
   def render_bad_request_error(exception)

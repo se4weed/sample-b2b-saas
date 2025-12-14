@@ -9,6 +9,9 @@ Rails.application.routes.draw do
       namespace :user do
         resource :profile, only: %i[update]
       end
+      namespace :admin_user do
+        resources :roles, only: %i[index create update destroy]
+      end
     end
   end
 
