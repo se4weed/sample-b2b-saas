@@ -6,6 +6,7 @@
  * OpenAPI spec version: v1
  */
 import type { UserProfile } from "./userProfile";
+import type { Role } from "./role";
 
 export interface User {
   id: string;
@@ -13,4 +14,5 @@ export interface User {
   createdAt: string;
   updatedAt: string;
   profile: UserProfile;
+  role: Role;
 }

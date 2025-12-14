@@ -16,6 +16,11 @@ class Api::V1::UsersController < Api::V1::ApplicationController
           updatedAt: user.updated_at,
           profile: {
             name: user.display_name
+          },
+          role: {
+            id: user.role.id,
+            name: user.role.name,
+            permissionType: user.role.permission_type
           }
         }
       }

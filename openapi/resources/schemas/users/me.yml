@@ -13,6 +13,7 @@ user:
     - createdAt
     - updatedAt
     - profile
+    - role
   properties:
     id:
       type: string
@@ -38,3 +39,5 @@ user:
         name:
           type: string
           example: 山田太郎
+    role:
+      $ref: '../roles.yml#/role'

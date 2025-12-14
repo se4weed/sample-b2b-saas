@@ -830,6 +830,10 @@ components:
         user:
           createdAt: 2021-01-01T00:00:00Z
           emailAddress: user@example.com
+          role:
+            permissionType: null
+            name: name
+            id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
           profile:
             name: 山田太郎
           id: 123e4567-e89b-12d3-a456-426614174000
@@ -842,6 +846,10 @@ components:
       example:
         createdAt: 2021-01-01T00:00:00Z
         emailAddress: user@example.com
+        role:
+          permissionType: null
+          name: name
+          id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
         profile:
           name: 山田太郎
         id: 123e4567-e89b-12d3-a456-426614174000
@@ -865,11 +873,14 @@ components:
           type: string
         profile:
           $ref: '#/components/schemas/user_profile'
+        role:
+          $ref: '#/components/schemas/role'
       required:
       - createdAt
       - emailAddress
       - id
       - profile
+      - role
       - updatedAt
       type: object
     post_roles_request:

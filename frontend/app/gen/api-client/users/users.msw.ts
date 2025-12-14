@@ -9,6 +9,7 @@ import { faker } from "@faker-js/faker";
 
 import { HttpResponse, http } from "msw";
 
+import { PermissionType } from ".././models";
 import type { Created, UserResponse } from ".././models";
 
 export const getPostUsersResponseMock = (overrideResponse: Partial<Created> = {}): Created => ({
@@ -24,6 +25,11 @@ export const getGetUsersMeResponseMock = (overrideResponse: Partial<UserResponse
       createdAt: `${faker.date.past().toISOString().split(".")[0]}Z`,
       updatedAt: `${faker.date.past().toISOString().split(".")[0]}Z`,
       profile: { name: faker.string.alpha({ length: { min: 10, max: 20 } }) },
+      role: {
+        id: faker.string.uuid(),
+        name: faker.string.alpha({ length: { min: 10, max: 20 } }),
+        permissionType: faker.helpers.arrayElement(Object.values(PermissionType)),
+      },
     },
     undefined,
   ]),
