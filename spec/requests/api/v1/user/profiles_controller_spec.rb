@@ -58,7 +58,7 @@ RSpec.describe Api::V1::User::ProfilesController, type: :request do
         patch api_v1_user_profile_path, params: {}
 
         expected_body = {
-          error: "パラメータ（name）が不足しています。"
+          error: "パラメータ（ロール名）が不足しています。"
         }
 
         expect(response.body).to eq expected_body.to_json

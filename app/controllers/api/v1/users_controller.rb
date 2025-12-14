@@ -16,6 +16,11 @@ class Api::V1::UsersController < Api::V1::ApplicationController
           updatedAt: user.updated_at,
           profile: {
             name: user.display_name
+          },
+          role: {
+            id: user.role.id,
+            name: user.role.name,
+            permissionType: user.role.permission_type
           }
         }
       }
@@ -34,13 +39,13 @@ class Api::V1::UsersController < Api::V1::ApplicationController
     UserMailer.welcome(user).deliver_later
     start_new_session_for user
 
-    render status: :created, json: { message: "アカウントの登録が完了しました。" }
+    render status: :created, json: { message: I18n.t("messages.success.create", model: User.model_name.human) }
   end
 
   private
 
   def rate_limit_exceeded
-    render status: :too_many_requests, json: { error: "リクエストが多すぎます。しばらくしてから再度お試しください。" }
+    render status: :too_many_requests, json: { error: I18n.t("messages.error.too_many_requests") }
   end
 
   def create_user_params

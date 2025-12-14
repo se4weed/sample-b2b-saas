@@ -4,6 +4,7 @@ import { createElement, type ReactNode } from "react";
 import { useAuthRedirect } from "~/hooks/use-auth-redirect";
 import { Layout } from "../../helpers/Layout";
 import { toast } from "sonner";
+import type { User } from "~/gen/api-client/models";
 
 vi.mock("react-router", () => ({
   useNavigate: () => mockNavigate,
@@ -15,7 +16,7 @@ vi.mock("~/globalStates/user", () => ({
 }));
 
 let mockNavigate = vi.fn();
-let mockUser: unknown = undefined;
+let mockUser: User | null | undefined = undefined;
 let mockLocation = { pathname: "/" };
 
 type UseAuthRedirectOptions = Parameters<typeof useAuthRedirect>[0];
@@ -54,10 +55,21 @@ describe("useAuthRedirect", () => {
     });
 
     it("ユーザーが認証済みの場合の状態を返す", () => {
-      mockUser = { id: 1, email: "test@example.com" };
+      mockUser = {
+        id: "1",
+        emailAddress: "test@example.com",
+        createdAt: "",
+        updatedAt: "",
+        profile: { name: "Test User" },
+        role: {
+          id: "1",
+          name: "general",
+          permissionType: "general",
+        },
+      };
       const { result } = renderUseAuthRedirect();
 
-      expect(result.current.user).toEqual({ id: 1, email: "test@example.com" });
+      expect(result.current.user).toEqual(mockUser);
       expect(result.current.isLoading).toBe(false);
       expect(result.current.isAuthenticated).toBe(true);
     });
@@ -95,7 +107,18 @@ describe("useAuthRedirect", () => {
     });
 
     it("認証済みユーザーはリダイレクトされない", () => {
-      mockUser = { id: 1, email: "test@example.com" };
+      mockUser = {
+        id: "1",
+        emailAddress: "test@example.com",
+        createdAt: "",
+        updatedAt: "",
+        profile: { name: "Test User" },
+        role: {
+          id: "1",
+          name: "general",
+          permissionType: "general",
+        },
+      };
 
       renderUseAuthRedirect({ requireAuth: true });
 
@@ -128,7 +151,18 @@ describe("useAuthRedirect", () => {
 
   describe("認証済みユーザーのリダイレクト", () => {
     it("認証済みユーザーをホームページにリダイレクトする", () => {
-      mockUser = { id: 1, email: "test@example.com" };
+      mockUser = {
+        id: "1",
+        emailAddress: "test@example.com",
+        createdAt: "",
+        updatedAt: "",
+        profile: { name: "Test User" },
+        role: {
+          id: "1",
+          name: "general",
+          permissionType: "general",
+        },
+      };
       const infoSpy = vi.spyOn(toast, "info");
 
       renderUseAuthRedirect({ redirectIfAuthenticated: true }, true);
@@ -148,7 +182,18 @@ describe("useAuthRedirect", () => {
     });
 
     it("カスタムリダイレクト先を指定できる", () => {
-      mockUser = { id: 1, email: "test@example.com" };
+      mockUser = {
+        id: "1",
+        emailAddress: "test@example.com",
+        createdAt: "",
+        updatedAt: "",
+        profile: { name: "Test User" },
+        role: {
+          id: "1",
+          name: "general",
+          permissionType: "general",
+        },
+      };
 
       renderUseAuthRedirect({
         redirectIfAuthenticated: true,
@@ -159,7 +204,18 @@ describe("useAuthRedirect", () => {
     });
 
     it("カスタムトーストメッセージが表示される", () => {
-      mockUser = { id: 1, email: "test@example.com" };
+      mockUser = {
+        id: "1",
+        emailAddress: "test@example.com",
+        createdAt: "",
+        updatedAt: "",
+        profile: { name: "Test User" },
+        role: {
+          id: "1",
+          name: "general",
+          permissionType: "general",
+        },
+      };
       const customMessage = "ダッシュボードに移動します";
 
       renderUseAuthRedirect({
@@ -171,7 +227,18 @@ describe("useAuthRedirect", () => {
     });
 
     it("トーストを無効にできる", () => {
-      mockUser = { id: 1, email: "test@example.com" };
+      mockUser = {
+        id: "1",
+        emailAddress: "test@example.com",
+        createdAt: "",
+        updatedAt: "",
+        profile: { name: "Test User" },
+        role: {
+          id: "1",
+          name: "general",
+          permissionType: "general",
+        },
+      };
 
       renderUseAuthRedirect({
         redirectIfAuthenticated: true,
@@ -192,7 +259,18 @@ describe("useAuthRedirect", () => {
         true
       );
 
-      mockUser = { id: 1, email: "test@example.com" };
+      mockUser = {
+        id: "1",
+        emailAddress: "test@example.com",
+        createdAt: "",
+        updatedAt: "",
+        profile: { name: "Test User" },
+        role: {
+          id: "1",
+          name: "general",
+          permissionType: "general",
+        },
+      };
 
       rerender();
 
@@ -215,11 +293,22 @@ describe("useAuthRedirect", () => {
 
   describe("オプションのデフォルト値", () => {
     it("オプションなしで呼び出しても動作する", () => {
-      mockUser = { id: 1, email: "test@example.com" };
+      mockUser = {
+        id: "1",
+        emailAddress: "test@example.com",
+        createdAt: "",
+        updatedAt: "",
+        profile: { name: "Test User" },
+        role: {
+          id: "1",
+          name: "general",
+          permissionType: "general",
+        },
+      };
 
       const { result } = renderUseAuthRedirect();
 
-      expect(result.current.user).toEqual({ id: 1, email: "test@example.com" });
+      expect(result.current.user).toEqual(mockUser);
       expect(mockNavigate).not.toHaveBeenCalled();
     });
 
@@ -229,6 +318,48 @@ describe("useAuthRedirect", () => {
       renderUseAuthRedirect({ requireAuth: true });
 
       expect(mockNavigate).toHaveBeenCalledWith("/signin");
+    });
+  });
+
+  describe("管理者権限が必要なページ", () => {
+    it("一般ユーザーをサインインページにリダイレクトする", () => {
+      mockUser = {
+        id: "1",
+        emailAddress: "test@example.com",
+        createdAt: "",
+        updatedAt: "",
+        profile: { name: "Test User" },
+        role: {
+          id: "1",
+          name: "general",
+          permissionType: "general",
+        },
+      };
+      const errorSpy = vi.spyOn(toast, "error");
+
+      renderUseAuthRedirect({ requireAuth: true, requireAdmin: true }, true);
+
+      expect(mockNavigate).toHaveBeenCalledWith(-1);
+      expect(errorSpy).toHaveBeenCalledWith("管理者権限が必要です。");
+      errorSpy.mockRestore();
+    });
+
+    it("管理者ユーザーはリダイレクトされない", () => {
+      mockUser = {
+        id: "1",
+        emailAddress: "test@example.com",
+        createdAt: "",
+        updatedAt: "",
+        profile: { name: "Test User" },
+        role: {
+          id: "1",
+          name: "admin",
+          permissionType: "admin",
+        },
+      };
+      renderUseAuthRedirect({ requireAuth: true, requireAdmin: true });
+
+      expect(mockNavigate).not.toHaveBeenCalled();
     });
   });
 

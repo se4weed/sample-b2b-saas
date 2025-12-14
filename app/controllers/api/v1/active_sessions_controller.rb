@@ -22,9 +22,9 @@ class Api::V1::ActiveSessionsController < Api::V1::ApplicationController
   def destroy
     session = current_user.sessions.find(params[:id])
     if session.destroy
-      render status: :ok, json: { message: "ログアウトしました。" }
+      render status: :ok, json: { message: I18n.t("messages.success.session_logged_out") }
     else
-      render status: :unprocessable_content, json: { error: "ログアウトに失敗しました。" }
+      render status: :unprocessable_content, json: { error: I18n.t("messages.error.session_logout_failed") }
     end
   end
 end

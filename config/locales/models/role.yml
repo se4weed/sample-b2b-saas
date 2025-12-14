@@ -1,0 +1,13 @@
+ja:
+  activerecord:
+    models:
+      role:
+        one: ロール
+        other: ロール
+    attributes:
+      role:
+        name: ロール名
+        permission_type: 権限
+        admin_role: 権限が管理者のロール
+        roles: ロール
+        users: ユーザー

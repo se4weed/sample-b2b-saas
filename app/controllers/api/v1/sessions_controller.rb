@@ -7,15 +7,15 @@ class Api::V1::SessionsController < Api::V1::ApplicationController
     user_credential = User::Credential.authenticate_by(email_address: login_params[:emailAddress], password: login_params[:password])
     if user_credential.present?
       start_new_session_for user_credential.user
-      render status: :ok, json: { message: "ログインしました。" }
+      render status: :ok, json: { message: I18n.t("messages.success.login") }
     else
-      render status: :unauthorized, json: { error: "メールアドレスまたはパスワードが間違っています。" }
+      render status: :unauthorized, json: { error: I18n.t("messages.error.invalid_credentials") }
     end
   end
 
   def destroy
     terminate_session
-    render status: :ok, json: { message: "ログアウトしました。" }
+    render status: :ok, json: { message: I18n.t("messages.success.signout") }
   end
 
   private

@@ -3,6 +3,7 @@ require "rails_helper"
 RSpec.describe Tenant do
   describe "associations" do
     it { is_expected.to have_many(:users).dependent(:destroy) }
+    it { is_expected.to have_many(:roles).dependent(:destroy) }
   end
 
   describe "validations" do

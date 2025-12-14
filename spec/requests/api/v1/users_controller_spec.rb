@@ -28,6 +28,11 @@ RSpec.describe Api::V1::UsersController, type: :request do
           updatedAt: user.updated_at.iso8601(3),
           profile: {
             name: "user_profile_name"
+          },
+          role: {
+            id: user.role.id,
+            name: user.role.name,
+            permissionType: user.role.permission_type
           }
         }
       }
@@ -56,6 +61,11 @@ RSpec.describe Api::V1::UsersController, type: :request do
             updatedAt: user.updated_at.iso8601(3),
             profile: {
               name: "削除済みのユーザー"
+            },
+            role: {
+              id: user.role.id,
+              name: user.role.name,
+              permissionType: user.role.permission_type
             }
           }
         }

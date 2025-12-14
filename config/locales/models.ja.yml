@@ -2,5 +2,8 @@ ja:
   activerecord:
     models:
       user: ユーザー
-      user/credential: ユーザーの認証情報
-      user/profile: ユーザーのプロフィール
+      user/credential: 認証情報
+      user/profile: プロフィール
+      role: ロール
+      tenant: テナント
+      session: セッション

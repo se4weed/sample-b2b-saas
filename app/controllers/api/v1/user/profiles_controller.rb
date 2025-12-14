@@ -1,10 +1,11 @@
 class Api::V1::User::ProfilesController < Api::V1::ApplicationController
   def update
     name = params.require(:name)
-    if current_user.profile.update(name: name)
-      render status: :ok, json: { message: "プロフィールを更新しました。" }
+    profile = current_user.profile
+    if profile.update(name: name)
+      render status: :ok, json: { message: I18n.t("messages.success.update", model: profile.model_name.human) }
     else
-      render status: :unprocessable_entity, json: { error: "プロフィールの更新に失敗しました。" }
+      render status: :unprocessable_entity, json: { error: I18n.t("messages.error.update", model: profile.model_name.human) }
     end
   end
 end
