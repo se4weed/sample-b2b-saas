@@ -578,6 +578,186 @@ paths:
       summary: ロールを更新する
       tags:
       - Role
+  /api/v1/admin_user/users:
+    get:
+      description: ユーザーの一覧を取得する
+      operationId: getUsers
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/users'
+          description: ユーザーの一覧を取得しました
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/unauthorized'
+          description: 認証エラー
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/forbidden'
+          description: 認証エラー
+        "429":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/too_many_requests'
+          description: リクエストが多すぎます
+      summary: ユーザーの一覧を取得する
+      tags:
+      - AdminUser::Users
+    post:
+      description: ユーザーを作成する
+      operationId: postUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/post_users_request'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ok'
+          description: ユーザーを作成しました
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/bad_request'
+          description: リクエストエラー
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/unauthorized'
+          description: 認証エラー
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/forbidden'
+          description: 認証エラー
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/unprocessable_entity_error'
+          description: ロールの作成に失敗しました
+      summary: ユーザー を作成する
+      tags:
+      - AdminUser::Users
+  /api/v1/admin_user/users/{userId}:
+    delete:
+      description: ユーザーを削除する
+      operationId: deleteUser
+      parameters:
+      - in: path
+        name: userId
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ok'
+          description: ユーザーを削除しました
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/bad_request'
+          description: リクエストエラー
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/unauthorized'
+          description: 認証エラー
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/forbidden'
+          description: 認証エラー
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/not_found'
+          description: ユーザーが見つかりません
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/unprocessable_entity_error'
+          description: ユーザーの削除に失敗しました
+      summary: ユーザーを削除する
+      tags:
+      - AdminUser::User
+    patch:
+      description: ユーザーを更新する
+      operationId: patchUser
+      parameters:
+      - in: path
+        name: userId
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/patch_user_request'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ok'
+          description: ユーザーを更新しました
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/bad_request'
+          description: リクエストエラー
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/unauthorized'
+          description: 認証エラー
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/forbidden'
+          description: 認証エラー
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/not_found'
+          description: ユーザーが見つかりません
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/unprocessable_entity_error'
+          description: ユーザーの更新に失敗しました
+      summary: ユーザーを更新する
+      tags:
+      - AdminUser::User
 components:
   schemas:
     activeSessions:
@@ -947,6 +1127,87 @@ components:
       required:
       - name
       - permissionType
+      type: object
+    post_users_request:
+      properties:
+        name:
+          example: Manager
+          type: string
+        permissionType:
+          $ref: '#/components/schemas/permission_type'
+        credential:
+          $ref: '#/components/schemas/credential'
+      required:
+      - credential
+      - name
+      - roleId
+      type: object
+    credential:
+      properties:
+        emailAddress:
+          example: test@example.com
+          format: email
+          type: string
+        password:
+          example: Password123!
+          format: password
+          type: string
+        passwordConfirmation:
+          example: Password123!
+          format: password
+          type: string
+      required:
+      - emailAddress
+      - password
+      - passwordConfirmation
+      type: object
+    users:
+      example:
+        users:
+        - createdAt: 2021-01-01T00:00:00Z
+          emailAddress: user@example.com
+          role:
+            permissionType: null
+            name: name
+            id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          profile:
+            name: 山田太郎
+          id: 123e4567-e89b-12d3-a456-426614174000
+          updatedAt: 2021-01-01T00:00:00Z
+        - createdAt: 2021-01-01T00:00:00Z
+          emailAddress: user@example.com
+          role:
+            permissionType: null
+            name: name
+            id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          profile:
+            name: 山田太郎
+          id: 123e4567-e89b-12d3-a456-426614174000
+          updatedAt: 2021-01-01T00:00:00Z
+      properties:
+        users:
+          items:
+            $ref: '#/components/schemas/user'
+          type: array
+      required:
+      - users
+      type: object
+    patch_user_request:
+      properties:
+        name:
+          description: ユーザー名
+          example: 山田太郎
+          type: string
+        roleId:
+          description: ロールID
+          example: role_123456
+          type: string
+        credential:
+          $ref: '#/components/schemas/credential'
+      required:
+      - credential
+      - name
+      - roleId
       type: object
     activeSession_userAgent:
       example:
