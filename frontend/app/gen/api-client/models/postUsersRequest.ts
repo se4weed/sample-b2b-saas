@@ -5,11 +5,10 @@
  * API仕様
  * OpenAPI spec version: v1
  */
-import type { PermissionType } from "./permissionType";
 import type { Credential } from "./credential";
 
 export interface PostUsersRequest {
   name: string;
-  permissionType?: PermissionType;
+  roleId: string;
   credential: Credential;
 }

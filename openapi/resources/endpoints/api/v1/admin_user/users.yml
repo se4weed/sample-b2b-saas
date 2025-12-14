@@ -86,8 +86,9 @@ components:
         name:
           type: string
           example: Manager
-        permissionType:
-          $ref: '../../../../schemas/roles.yml#/permission_type'
+        roleId:
+          type: string
+          example: role_1234567890abcdef
         credential:
           $ref: '#/components/schemas/credential'
     credential:

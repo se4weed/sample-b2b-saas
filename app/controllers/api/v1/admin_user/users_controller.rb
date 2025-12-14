@@ -1,6 +1,6 @@
 class Api::V1::AdminUser::UsersController < Api::V1::AdminUser::ApplicationController
   def index
-    users = User.where(tenant_id: current_user.tenant_id).preload(:role, :profile).order(created_at: :desc)
+    users = User.where(tenant_id: current_user.tenant_id).preload(:role, :profile, :credential).order(created_at: :desc)
 
     render status: :ok, json:
     {
@@ -60,7 +60,6 @@ class Api::V1::AdminUser::UsersController < Api::V1::AdminUser::ApplicationContr
     }
   rescue ActiveRecord::RecordInvalid
     render json: { error: I18n.t("messages.error.update", model: User.model_name.human) }, status: :unprocessable_entity
-  else
   end
 
   def destroy

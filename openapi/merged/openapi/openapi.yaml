@@ -649,7 +649,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/unprocessable_entity_error'
-          description: ロールの作成に失敗しました
+          description: ユーザーの作成に失敗しました
       summary: ユーザー を作成する
       tags:
       - AdminUser::Users
@@ -1133,8 +1133,9 @@ components:
         name:
           example: Manager
           type: string
-        permissionType:
-          $ref: '#/components/schemas/permission_type'
+        roleId:
+          example: role_1234567890abcdef
+          type: string
         credential:
           $ref: '#/components/schemas/credential'
       required:
