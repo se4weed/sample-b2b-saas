@@ -39,5 +39,5 @@ frontend/build/
 frontend/.react-router/
 
 # Ignore ssl certs
-ssl/*.crt
-ssl/*.key
+config/ssl/*.crt
+config/ssl/*.key
