@@ -148,6 +148,7 @@ bin/dev-https
 - ブラウザで証明書警告が表示された場合は、生成された `localhost.crt` を OS のキーチェイン等に登録して信頼してください。
 - 通常の HTTP 起動は従来通り `bin/dev` を利用できます。
 - Vite 開発サーバーから API へ HTTPS で接続するため、`VITE_BACKEND_ORIGIN=https://localhost:3000` を指定して `pnpm --filter frontend dev` を起動してください。
+- CSRF Cookie を含む HTTPS 同士の通信が必要な場合は、フロントエンド開発サーバーも HTTPS で起動します。`bin/dev-https` で生成された `config/ssl/localhost.{crt,key}` を使って `VITE_DEV_SERVER_HTTPS=1 pnpm --filter frontend dev` を実行してください（別パスを使いたい場合は `VITE_DEV_SERVER_CERT_PATH` と `VITE_DEV_SERVER_KEY_PATH` を指定します）。
 
 ## 🚀 実装手順
 

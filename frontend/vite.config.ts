@@ -1,11 +1,17 @@
+import { existsSync, readFileSync } from "node:fs";
+import { dirname, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
+
 import { reactRouter } from "@react-router/dev/vite";
 import tailwindcss from "@tailwindcss/vite";
 import { defineConfig } from "vite";
+import type { ServerOptions } from "vite";
 import tsconfigPaths from "vite-tsconfig-paths";
 
 const backendOrigin = (process.env.VITE_BACKEND_ORIGIN ?? "http://localhost:3000").replace(/\/$/, "");
 const isHttpsBackend = backendOrigin.startsWith("https://");
 const proxyTarget = `${backendOrigin}/api`;
+const httpsOptions = resolveHttpsOptions();
 
 export default defineConfig({
   plugins: [tailwindcss(), reactRouter(), tsconfigPaths()] as any,
@@ -20,6 +26,7 @@ export default defineConfig({
 
   // These are settings for the dev server.
   server: {
+    https: httpsOptions,
     // In production and preview mode, the API server (Rails) and the assets
     // will be served from the same port number (typically 80 for production and 3000 for preview).
     //
@@ -36,10 +43,40 @@ export default defineConfig({
       // the following rules.
       "/api": {
         target: proxyTarget,
-        changeOrigin: true,
         secure: !isHttpsBackend && process.env.NODE_ENV !== "development",
         rewrite: (path) => path.replace(/^\/api/, ""),
       },
     },
   },
 });
+
+function resolveHttpsOptions(): ServerOptions["https"] | undefined {
+  const flag = (process.env.VITE_DEV_SERVER_HTTPS ?? "").toLowerCase();
+  const shouldUseHttps = flag === "1" || flag === "true";
+
+  if (!shouldUseHttps) {
+    return undefined;
+  }
+
+  const frontendDir = dirname(fileURLToPath(import.meta.url));
+  const defaultCertPath = resolve(frontendDir, "../config/ssl/localhost.crt");
+  const defaultKeyPath = resolve(frontendDir, "../config/ssl/localhost.key");
+  const certPath = process.env.VITE_DEV_SERVER_CERT_PATH ?? defaultCertPath;
+  const keyPath = process.env.VITE_DEV_SERVER_KEY_PATH ?? defaultKeyPath;
+
+  if (!existsSync(certPath) || !existsSync(keyPath)) {
+    throw new Error(
+      [
+        "VITE_DEV_SERVER_HTTPS is enabled but certificate files were not found.",
+        `Expected cert at: ${certPath}`,
+        `Expected key at: ${keyPath}`,
+        "Run bin/dev-https once (to generate config/ssl/localhost.{crt,key}) or set VITE_DEV_SERVER_CERT_PATH/VITE_DEV_SERVER_KEY_PATH.",
+      ].join("\n"),
+    );
+  }
+
+  return {
+    cert: readFileSync(certPath),
+    key: readFileSync(keyPath),
+  };
+}
