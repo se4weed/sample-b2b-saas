@@ -3,13 +3,16 @@ import tailwindcss from "@tailwindcss/vite";
 import { defineConfig } from "vite";
 import tsconfigPaths from "vite-tsconfig-paths";
 
+const backendOrigin = (process.env.VITE_BACKEND_ORIGIN ?? "http://localhost:3000").replace(/\/$/, "");
+const isHttpsBackend = backendOrigin.startsWith("https://");
+const proxyTarget = `${backendOrigin}/api`;
 
 export default defineConfig({
   plugins: [tailwindcss(), reactRouter(), tsconfigPaths()] as any,
   build: {
     assetsDir: "assets",
     // Disable sourcemaps in production to avoid security warnings
-    sourcemap: process.env.NODE_ENV === 'development',
+    sourcemap: process.env.NODE_ENV === "development",
   },
   // As also defined in react-router.config.ts, this tells Vite that
   // the app is served from the "/assets/" sub-path.
@@ -32,19 +35,9 @@ export default defineConfig({
       // Any requests starting with "/api" will be forwarded according to
       // the following rules.
       "/api": {
-        // The requests will be forward to the Rails server on
-        // "http://localhost:3000"
-        target: "http://localhost:3000/api",
-        // In our case, our Rails server does not serve APIs on "/api".
-        // Instead, a request for Posts is handled by "http://localhost:3000/posts".
-        // Therefore, we strip the "/api" prefix from the request path before
-        // sending it to Rails.
-        //
-        // Note that if the Rails server has a dedicated namespace for APIs,
-        // then you can just use that instead of "/api", and the following
-        // rewrite rule will not be necessary.
-        //
-        // Also see `frontend/app/utilities/proxy.ts` for how we handle this inside React.
+        target: proxyTarget,
+        changeOrigin: true,
+        secure: !isHttpsBackend,
         rewrite: (path) => path.replace(/^\/api/, ""),
       },
     },

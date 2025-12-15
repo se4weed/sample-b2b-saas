@@ -137,6 +137,18 @@ rails react_router:build
 bin/openapi-generate
 ```
 
+### 8. HTTPSでのローカルアクセス（任意）
+開発中に `https://localhost:3000` でアプリを確認したい場合は以下のコマンドを利用します。
+
+```bash
+bin/dev-https
+```
+
+- 初回実行時に `config/ssl/localhost.{crt,key}` を self-signed 証明書で生成します（`openssl` が必要）。
+- ブラウザで証明書警告が表示された場合は、生成された `localhost.crt` を OS のキーチェイン等に登録して信頼してください。
+- 通常の HTTP 起動は従来通り `bin/dev` を利用できます。
+- Vite 開発サーバーから API へ HTTPS で接続するため、`VITE_BACKEND_ORIGIN=https://localhost:3000` を指定して `pnpm --filter frontend dev` を起動してください。
+
 ## 🚀 実装手順
 
 ### 1. OpenAPI定義 → Rails API実装
@@ -204,7 +216,7 @@ CORS問題を回避するため、Viteの開発サーバーは`/api`で始まる
 server: {
   proxy: {
     "/api": {
-      target: "http://localhost:3000",
+      target: "https://localhost:3000",
       rewrite: (path) => path.replace(/^\/api/, "")
     }
   }
