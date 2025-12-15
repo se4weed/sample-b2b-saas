@@ -37,3 +37,7 @@
 node_modules
 frontend/build/
 frontend/.react-router/
+
+# Ignore ssl certs
+config/ssl/*.crt
+config/ssl/*.key

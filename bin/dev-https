@@ -1,0 +1,36 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require "fileutils"
+
+ssl_dir = File.expand_path("../config/ssl", __dir__)
+cert_path = File.join(ssl_dir, "localhost.crt")
+key_path = File.join(ssl_dir, "localhost.key")
+
+def generate_certificate(cert_path, key_path)
+  FileUtils.mkdir_p(File.dirname(cert_path))
+  cmd = [
+    "openssl", "req", "-x509",
+    "-nodes",
+    "-newkey", "rsa:2048",
+    "-keyout", key_path,
+    "-out", cert_path,
+    "-days", "3650",
+    "-subj", "/CN=localhost"
+  ]
+  system(*cmd, exception: true)
+end
+
+unless File.exist?(cert_path) && File.exist?(key_path)
+  puts "Generating self-signed certificate for https://localhost ..."
+  generate_certificate(cert_path, key_path)
+  puts "Certificate generated at #{cert_path}"
+end
+
+env = {
+  "SSL_BIND" => "true",
+  "SSL_CERT_PATH" => cert_path,
+  "SSL_KEY_PATH" => key_path
+}
+
+exec env, "./bin/rails", "server", *ARGV

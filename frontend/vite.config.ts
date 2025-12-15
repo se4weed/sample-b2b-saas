@@ -1,15 +1,24 @@
+import { existsSync, readFileSync } from "node:fs";
+import { dirname, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
+
 import { reactRouter } from "@react-router/dev/vite";
 import tailwindcss from "@tailwindcss/vite";
 import { defineConfig } from "vite";
+import type { ServerOptions } from "vite";
 import tsconfigPaths from "vite-tsconfig-paths";
 
+const backendOrigin = (process.env.VITE_BACKEND_ORIGIN ?? "http://localhost:3000").replace(/\/$/, "");
+const isHttpsBackend = backendOrigin.startsWith("https://");
+const proxyTarget = `${backendOrigin}/api`;
+const httpsOptions = resolveHttpsOptions();
 
 export default defineConfig({
   plugins: [tailwindcss(), reactRouter(), tsconfigPaths()] as any,
   build: {
     assetsDir: "assets",
     // Disable sourcemaps in production to avoid security warnings
-    sourcemap: process.env.NODE_ENV === 'development',
+    sourcemap: process.env.NODE_ENV === "development",
   },
   // As also defined in react-router.config.ts, this tells Vite that
   // the app is served from the "/assets/" sub-path.
@@ -17,6 +26,7 @@ export default defineConfig({
 
   // These are settings for the dev server.
   server: {
+    https: httpsOptions,
     // In production and preview mode, the API server (Rails) and the assets
     // will be served from the same port number (typically 80 for production and 3000 for preview).
     //
@@ -32,21 +42,41 @@ export default defineConfig({
       // Any requests starting with "/api" will be forwarded according to
       // the following rules.
       "/api": {
-        // The requests will be forward to the Rails server on
-        // "http://localhost:3000"
-        target: "http://localhost:3000/api",
-        // In our case, our Rails server does not serve APIs on "/api".
-        // Instead, a request for Posts is handled by "http://localhost:3000/posts".
-        // Therefore, we strip the "/api" prefix from the request path before
-        // sending it to Rails.
-        //
-        // Note that if the Rails server has a dedicated namespace for APIs,
-        // then you can just use that instead of "/api", and the following
-        // rewrite rule will not be necessary.
-        //
-        // Also see `frontend/app/utilities/proxy.ts` for how we handle this inside React.
+        target: proxyTarget,
+        secure: !isHttpsBackend && process.env.NODE_ENV !== "development",
         rewrite: (path) => path.replace(/^\/api/, ""),
       },
     },
   },
 });
+
+function resolveHttpsOptions(): ServerOptions["https"] | undefined {
+  const flag = (process.env.VITE_DEV_SERVER_HTTPS ?? "").toLowerCase();
+  const shouldUseHttps = flag === "1" || flag === "true";
+
+  if (!shouldUseHttps) {
+    return undefined;
+  }
+
+  const frontendDir = dirname(fileURLToPath(import.meta.url));
+  const defaultCertPath = resolve(frontendDir, "../config/ssl/localhost.crt");
+  const defaultKeyPath = resolve(frontendDir, "../config/ssl/localhost.key");
+  const certPath = process.env.VITE_DEV_SERVER_CERT_PATH ?? defaultCertPath;
+  const keyPath = process.env.VITE_DEV_SERVER_KEY_PATH ?? defaultKeyPath;
+
+  if (!existsSync(certPath) || !existsSync(keyPath)) {
+    throw new Error(
+      [
+        "VITE_DEV_SERVER_HTTPS is enabled but certificate files were not found.",
+        `Expected cert at: ${certPath}`,
+        `Expected key at: ${keyPath}`,
+        "Run bin/dev-https once (to generate config/ssl/localhost.{crt,key}) or set VITE_DEV_SERVER_CERT_PATH/VITE_DEV_SERVER_KEY_PATH.",
+      ].join("\n"),
+    );
+  }
+
+  return {
+    cert: readFileSync(certPath),
+    key: readFileSync(keyPath),
+  };
+}
