@@ -37,7 +37,7 @@ export default defineConfig({
       "/api": {
         target: proxyTarget,
         changeOrigin: true,
-        secure: !isHttpsBackend,
+        secure: !isHttpsBackend && process.env.NODE_ENV !== "development",
         rewrite: (path) => path.replace(/^\/api/, ""),
       },
     },
