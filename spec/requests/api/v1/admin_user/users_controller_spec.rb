@@ -86,7 +86,7 @@ RSpec.describe Api::V1::AdminUser::UsersController do
         post api_v1_admin_user_users_path, params: params
       end.to change(User, :count).by(1)
 
-      expect(User.last.name_id).to eq "name-id-001"
+      expect(User.find_by(name_id: "name-id-001")).to be_present
     end
 
     context "不正なパラメータの場合" do

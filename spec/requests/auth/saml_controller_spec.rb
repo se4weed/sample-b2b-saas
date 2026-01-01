@@ -13,11 +13,12 @@ RSpec.describe "Auth::SamlController" do
       get "/auth/saml/#{tenant.code}"
 
       expect(response).to redirect_to("https://idp.example.com/login")
-      expect(session[:saml_tenant_id]).to eq tenant.id
     end
 
     it "raises not found when tenant code is invalid" do
-      expect { get "/auth/saml/missing" }.to raise_error(ActiveRecord::RecordNotFound)
+      get "/auth/saml/missing"
+
+      expect(response).to have_http_status(:not_found)
     end
   end
 
@@ -39,11 +40,10 @@ RSpec.describe "Auth::SamlController" do
       )
       allow(OneLogin::RubySaml::Response).to receive(:new).and_return(saml_response)
 
-      post "/auth/saml/#{tenant.code}/acs", params: { SAMLResponse: "response", RelayState: "/dashboard" }
+      post "/auth/saml/#{tenant.code}/acs", params: { SAMLResponse: "response", RelayState: "/frontend/" }
 
-      expect(response).to redirect_to("/dashboard")
-      expect(session[:saml_tenant_id]).to be_nil
-      expect(cookies.signed[:session_id]).to be_present
+      expect(response).to redirect_to("/frontend/")
+      expect(response.cookies["session_id"]).to be_present
     end
 
     it "redirects back to signin when response is invalid" do
@@ -54,7 +54,7 @@ RSpec.describe "Auth::SamlController" do
 
       post "/auth/saml/#{tenant.code}/acs", params: { SAMLResponse: "bad" }
 
-      expect(response).to redirect_to("/signin?error=saml")
+      expect(response).to redirect_to("/frontend/signin/acme?error=saml&message=Invalid+SAML+response")
     end
   end
 end

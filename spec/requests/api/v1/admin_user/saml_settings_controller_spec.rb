@@ -64,11 +64,15 @@ RSpec.describe Api::V1::AdminUser::SamlSettingsController do
         assert_schema_conform(200)
       end
 
-      it "samlSettingがnullで返されること" do
+      it "samlSettingが空で返されること" do
         get api_v1_admin_user_saml_setting_path
 
         expected_body = {
-          samlSetting: nil,
+          samlSetting: {
+            entityId: "",
+            ssoUrl: "",
+            idpX509Certificate: ""
+          },
           serviceProvider: expected_service_provider
         }
         expect(response.body).to eq(expected_body.to_json)

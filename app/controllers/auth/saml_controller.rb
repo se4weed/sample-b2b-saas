@@ -31,7 +31,7 @@ class Auth::SamlController < ApplicationController
     email = response.nameid.presence || response.attributes["email"] || response.attributes["Email"]
     return redirect_to(signin_with_error_path(tenant_code: params[:tenant_code], message: "Email not found in SAML response")) if email.blank?
 
-    user = tenant.users.joins(:credential).find_by(name_id: response.nameid)
+    user = tenant.users.joins(:credential).find_by(user_credentials: { email_address: email })
     return redirect_to(signin_with_error_path(tenant_code: params[:tenant_code], message: "User not found")) unless user
 
     start_new_session_for(user)
