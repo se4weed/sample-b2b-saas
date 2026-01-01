@@ -1,0 +1,7 @@
+ja:
+  api:
+    admin_user/saml_setting:
+      parameters:
+        entityId: エンティティID
+        ssoUrl: SSO URL
+        idpX509Certificate: IdP X.509証明書

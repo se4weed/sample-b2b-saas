@@ -10,5 +10,7 @@ import type { Credential } from "./credential";
 export interface PostUsersRequest {
   name: string;
   roleId: string;
+  /** @nullable */
+  nameId?: string | null;
   credential: Credential;
 }

@@ -30,3 +30,7 @@ paths:
     $ref: './resources/endpoints/api/v1/admin_user/users.yml'
   /api/v1/admin_user/users/{userId}:
     $ref: './resources/endpoints/api/v1/admin_user/user.yml'
+  /api/v1/admin_user/saml_setting:
+    $ref: './resources/endpoints/api/v1/admin_user/saml_setting.yml'
+  /api/v1/tenants/{code}:
+    $ref: './resources/endpoints/api/v1/tenant.yml'

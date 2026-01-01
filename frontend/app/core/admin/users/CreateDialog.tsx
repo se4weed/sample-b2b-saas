@@ -28,6 +28,7 @@ export const CreateDialog = ({ open, onOpenChange, roles, mutateUsers }: Props) 
     defaultValues: {
       name: "",
       roleId: "",
+      nameId: "",
       credential: {
         emailAddress: "",
         password: "",
@@ -41,6 +42,7 @@ export const CreateDialog = ({ open, onOpenChange, roles, mutateUsers }: Props) 
       form.reset({
         name: "",
         roleId: "",
+        nameId: "",
         credential: {
           emailAddress: "",
           password: "",
@@ -68,9 +70,11 @@ export const CreateDialog = ({ open, onOpenChange, roles, mutateUsers }: Props) 
   const { trigger, isMutating } = usePostUser({ swr: mutationOptions });
 
   const handleSubmit = (values: z.infer<typeof Schema>) => {
+    const normalizedNameId = values.nameId?.trim();
     const payload: PostUsersRequest & { roleId: string } = {
       name: values.name,
       roleId: values.roleId,
+      nameId: normalizedNameId || null,
       credential: values.credential,
     };
 
@@ -92,6 +96,20 @@ export const CreateDialog = ({ open, onOpenChange, roles, mutateUsers }: Props) 
                 <FormItem>
                   <FormLabel>ユーザー名</FormLabel>
                   <FormDescription>作成するユーザーの表示名を入力してください。</FormDescription>
+                  <FormControl>
+                    <Input {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="nameId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>NameID</FormLabel>
+                  <FormDescription>SAML 連携で使用する NameID を設定できます（任意）。</FormDescription>
                   <FormControl>
                     <Input {...field} />
                   </FormControl>

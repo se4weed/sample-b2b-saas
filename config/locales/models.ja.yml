@@ -7,3 +7,4 @@ ja:
       role: ロール
       tenant: テナント
       session: セッション
+      saml_setting: SAML設定

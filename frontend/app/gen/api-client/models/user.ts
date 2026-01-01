@@ -11,6 +11,8 @@ import type { Role } from "./role";
 export interface User {
   id: string;
   emailAddress: string;
+  /** @nullable */
+  nameId: string | null;
   createdAt: string;
   updatedAt: string;
   profile: UserProfile;

@@ -5,6 +5,7 @@
   "packageManager": "pnpm@10.14.0",
   "scripts": {
     "build": "react-router build",
+    "build:local": "VITE_BACKEND_ORIGIN=https://localhost:3000 VITE_DEV_SERVER_HTTPS=1 react-router build",
     "dev": "react-router dev",
     "dev:https": "VITE_BACKEND_ORIGIN=https://localhost:3000 VITE_DEV_SERVER_HTTPS=1 react-router dev",
     "start": "react-router-serve ./build/server/index.js",

@@ -272,50 +272,6 @@ paths:
       summary: ログイン
       tags:
       - Sessions
-  /api/v1/users:
-    post:
-      description: ユーザーを作成する
-      operationId: postUsers
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/create_user_request'
-        required: true
-      responses:
-        "201":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/created'
-          description: ユーザーを作成しました
-        "400":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/bad_request'
-          description: バリデーションエラー
-        "404":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/not_found'
-          description: ユーザーが見つかりません
-        "422":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/unprocessable_entity_error'
-          description: ユーザーを作成できません
-        "429":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/too_many_requests'
-          description: リクエストが多すぎます
-      summary: ユーザーを作成する
-      tags:
-      - Users
   /api/v1/user/profile:
     patch:
       description: ユーザープロフィールを更新する
@@ -758,6 +714,162 @@ paths:
       summary: ユーザーを更新する
       tags:
       - AdminUser::User
+  /api/v1/admin_user/saml_setting:
+    get:
+      description: SAML設定を取得する
+      operationId: getSamlSetting
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/saml_setting_response'
+          description: SAML設定を取得しました
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/unauthorized'
+          description: 認証エラー
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/forbidden'
+          description: 権限不足
+        "429":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/too_many_requests'
+          description: リクエストが多すぎます
+      summary: SAML設定を取得する
+      tags:
+      - SamlSettings
+    patch:
+      description: SAML設定を更新する
+      operationId: patchSamlSetting
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/saml_setting_request'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ok'
+          description: SAML設定を更新しました
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/bad_request'
+          description: リクエストエラー
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/unauthorized'
+          description: 認証エラー
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/forbidden'
+          description: 権限不足
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/unprocessable_entity_error'
+          description: 更新に失敗しました
+      summary: SAML設定を更新する
+      tags:
+      - SamlSettings
+    post:
+      description: SAML設定を作成する
+      operationId: postSamlSetting
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/saml_setting_request'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ok'
+          description: SAML設定を作成しました
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/bad_request'
+          description: リクエストエラー
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/unauthorized'
+          description: 認証エラー
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/forbidden'
+          description: 権限不足
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/unprocessable_entity_error'
+          description: 作成に失敗しました
+      summary: SAML設定を作成する
+      tags:
+      - SamlSettings
+  /api/v1/tenants/{code}:
+    get:
+      description: 指定したコードのテナント情報を取得する
+      operationId: getTenant
+      parameters:
+      - in: path
+        name: code
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/tenant_response'
+          description: テナント情報を取得しました
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/bad_request'
+          description: リクエストエラー
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/not_found'
+          description: テナントが見つかりません
+        "429":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/too_many_requests'
+          description: リクエストが多すぎます
+      summary: テナント情報を取得する
+      tags:
+      - Tenants
 components:
   schemas:
     activeSessions:
@@ -966,37 +1078,6 @@ components:
       required:
       - error
       type: object
-    create_user_request:
-      properties:
-        emailAddress:
-          example: user@example.com
-          format: email
-          type: string
-        password:
-          example: PassW0rd
-          type: string
-        passwordConfirmation:
-          example: PassW0rd
-          type: string
-        name:
-          example: 山田太郎
-          type: string
-      required:
-      - emailAddress
-      - name
-      - password
-      - passwordConfirmation
-      type: object
-    created:
-      example:
-        message: 登録しました。
-      properties:
-        message:
-          example: 登録しました。
-          type: string
-      required:
-      - message
-      type: object
     patch_user_profile_request:
       properties:
         name:
@@ -1016,6 +1097,7 @@ components:
             id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
           profile:
             name: 山田太郎
+          nameId: name-id-1234
           id: 123e4567-e89b-12d3-a456-426614174000
           updatedAt: 2021-01-01T00:00:00Z
       properties:
@@ -1032,6 +1114,7 @@ components:
           id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
         profile:
           name: 山田太郎
+        nameId: name-id-1234
         id: 123e4567-e89b-12d3-a456-426614174000
         updatedAt: 2021-01-01T00:00:00Z
       properties:
@@ -1042,6 +1125,10 @@ components:
         emailAddress:
           example: user@example.com
           format: email
+          type: string
+        nameId:
+          example: name-id-1234
+          nullable: true
           type: string
         createdAt:
           example: 2021-01-01T00:00:00Z
@@ -1059,6 +1146,7 @@ components:
       - createdAt
       - emailAddress
       - id
+      - nameId
       - profile
       - role
       - updatedAt
@@ -1136,6 +1224,10 @@ components:
         roleId:
           example: role_1234567890abcdef
           type: string
+        nameId:
+          example: user-name-id
+          nullable: true
+          type: string
         credential:
           $ref: '#/components/schemas/credential'
       required:
@@ -1173,6 +1265,7 @@ components:
             id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
           profile:
             name: 山田太郎
+          nameId: name-id-1234
           id: 123e4567-e89b-12d3-a456-426614174000
           updatedAt: 2021-01-01T00:00:00Z
         - createdAt: 2021-01-01T00:00:00Z
@@ -1183,6 +1276,7 @@ components:
             id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
           profile:
             name: 山田太郎
+          nameId: name-id-1234
           id: 123e4567-e89b-12d3-a456-426614174000
           updatedAt: 2021-01-01T00:00:00Z
       properties:
@@ -1203,12 +1297,131 @@ components:
           description: ロールID
           example: role_123456
           type: string
+        nameId:
+          description: NameID
+          example: name-id-1234
+          nullable: true
+          type: string
         credential:
           $ref: '#/components/schemas/credential'
       required:
       - credential
       - name
       - roleId
+      type: object
+    saml_setting_request:
+      properties:
+        entityId:
+          example: https://sp.example.com/metadata
+          type: string
+        ssoUrl:
+          example: https://idp.example.com/sso
+          format: uri
+          type: string
+        idpX509Certificate:
+          description: PEM形式の証明書
+          type: string
+      required:
+      - entityId
+      - idpX509Certificate
+      - ssoUrl
+      type: object
+    saml_setting_response:
+      example:
+        serviceProvider:
+          acsUrl: https://app.example.com/auth/saml/example/acs
+          entityId: example-corp
+          initiateUrl: https://app.example.com/auth/saml/example
+        samlSetting:
+          ssoUrl: https://idp.example.com/sso
+          entityId: https://sp.example.com/metadata
+          idpX509Certificate: idpX509Certificate
+      properties:
+        samlSetting:
+          $ref: '#/components/schemas/saml_setting'
+        serviceProvider:
+          $ref: '#/components/schemas/service_provider'
+      required:
+      - samlSetting
+      - serviceProvider
+      type: object
+    saml_setting:
+      example:
+        ssoUrl: https://idp.example.com/sso
+        entityId: https://sp.example.com/metadata
+        idpX509Certificate: idpX509Certificate
+      properties:
+        entityId:
+          example: https://sp.example.com/metadata
+          type: string
+        ssoUrl:
+          example: https://idp.example.com/sso
+          format: uri
+          type: string
+        idpX509Certificate:
+          description: PEM形式の証明書
+          type: string
+      required:
+      - entityId
+      - idpX509Certificate
+      - ssoUrl
+      type: object
+    service_provider:
+      example:
+        acsUrl: https://app.example.com/auth/saml/example/acs
+        entityId: example-corp
+        initiateUrl: https://app.example.com/auth/saml/example
+      properties:
+        entityId:
+          description: テナントコード
+          example: example-corp
+          type: string
+        acsUrl:
+          description: Assertion Consumer ServiceのURL
+          example: https://app.example.com/auth/saml/example/acs
+          format: uri
+          type: string
+        initiateUrl:
+          description: SAMLリクエスト開始URL
+          example: https://app.example.com/auth/saml/example
+          format: uri
+          type: string
+      required:
+      - acsUrl
+      - entityId
+      - initiateUrl
+      type: object
+    tenant_response:
+      example:
+        tenant:
+          code: tenant_123
+          name: サンプルテナント
+          samlEnabled: true
+      properties:
+        tenant:
+          $ref: '#/components/schemas/tenant'
+      required:
+      - tenant
+      type: object
+    tenant:
+      example:
+        code: tenant_123
+        name: サンプルテナント
+        samlEnabled: true
+      properties:
+        code:
+          example: tenant_123
+          type: string
+        name:
+          example: サンプルテナント
+          type: string
+        samlEnabled:
+          example: true
+          type: boolean
+      required:
+      - code
+      - name
+      - samlEnabled
       type: object
     activeSession_userAgent:
       example:

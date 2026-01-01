@@ -12,5 +12,10 @@ export interface PatchUserRequest {
   name: string;
   /** ロールID */
   roleId: string;
+  /**
+   * NameID
+   * @nullable
+   */
+  nameId?: string | null;
   credential: Credential;
 }

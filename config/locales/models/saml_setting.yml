@@ -1,0 +1,7 @@
+ja:
+  activerecord:
+    attributes:
+      saml_setting:
+        entityId: エンティティID
+        ssoUrl: SSO URL
+        idpX509Certificate: IdP X.509証明書

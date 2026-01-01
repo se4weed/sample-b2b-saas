@@ -6,6 +6,8 @@ class User < ApplicationRecord
   belongs_to :tenant
   belongs_to :role
 
+  validates :name_id, uniqueness: { scope: :tenant_id }, allow_nil: true
+
   def display_name
     profile&.name || I18n.t("activerecord.attributes.user.already_destroyed")
   end

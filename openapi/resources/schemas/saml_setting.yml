@@ -1,0 +1,50 @@
+saml_setting_response:
+  type: object
+  required:
+    - samlSetting
+    - serviceProvider
+  properties:
+    samlSetting:
+      $ref: '#/saml_setting'
+    serviceProvider:
+      $ref: '#/service_provider'
+
+saml_setting:
+  type: object
+  required:
+    - entityId
+    - ssoUrl
+    - idpX509Certificate
+  properties:
+    entityId:
+      type: string
+      example: https://sp.example.com/metadata
+    ssoUrl:
+      type: string
+      format: uri
+      example: https://idp.example.com/sso
+    idpX509Certificate:
+      type: string
+      description: PEM形式の証明書
+
+service_provider:
+  type: object
+  required:
+    - entityId
+    - acsUrl
+    - initiateUrl
+  properties:
+    entityId:
+      type: string
+      description: テナントコード
+      example: example-corp
+    acsUrl:
+      type: string
+      format: uri
+      description: Assertion Consumer ServiceのURL
+      example: https://app.example.com/auth/saml/example/acs
+    initiateUrl:
+      type: string
+      format: uri
+      description: SAMLリクエスト開始URL
+      example: https://app.example.com/auth/saml/example

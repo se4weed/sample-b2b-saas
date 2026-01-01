@@ -16,6 +16,7 @@ export const getGetUsersResponseMock = (overrideResponse: Partial<Users> = {}): 
   users: Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => ({
     id: faker.string.uuid(),
     emailAddress: faker.internet.email(),
+    nameId: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), null]),
     createdAt: `${faker.date.past().toISOString().split(".")[0]}Z`,
     updatedAt: `${faker.date.past().toISOString().split(".")[0]}Z`,
     profile: { name: faker.string.alpha({ length: { min: 10, max: 20 } }) },

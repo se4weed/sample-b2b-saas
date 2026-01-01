@@ -16,7 +16,7 @@ import {
   useSidebar,
 } from "../ui/sidebar";
 import Text from "../shared/text";
-import { CreditCard, EllipsisVertical, HomeIcon, LogOut, User2, type LucideIcon } from "lucide-react";
+import { CreditCard, EllipsisVertical, HomeIcon, LogOut, Shield, User2, type LucideIcon } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -127,6 +127,11 @@ const AppSideBar = ({ user }: { user: User }) => {
       title: "ロール管理",
       url: "/admin/roles",
       icon: User2,
+    },
+    {
+      title: "SAML設定",
+      url: "/admin/saml-settings",
+      icon: Shield,
     },
   ];
 

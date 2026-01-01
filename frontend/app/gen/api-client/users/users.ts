@@ -11,70 +11,8 @@ import type { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
 import useSwr from "swr";
 import type { Key, SWRConfiguration } from "swr";
 
-import useSWRMutation from "swr/mutation";
-import type { SWRMutationConfiguration } from "swr/mutation";
+import type { BadRequest, Forbidden, NotFound, TooManyRequests, Unauthorized, UserResponse } from ".././models";
 
-import type {
-  BadRequest,
-  CreateUserRequest,
-  Created,
-  Forbidden,
-  NotFound,
-  TooManyRequests,
-  Unauthorized,
-  UnprocessableEntityError,
-  UserResponse,
-} from ".././models";
-
-/**
- * ユーザーを作成する
- * @summary ユーザーを作成する
- */
-export const postUsers = (
-  createUserRequest: CreateUserRequest,
-  options?: AxiosRequestConfig
-): Promise<AxiosResponse<Created>> => {
-  return axios.post(`/api/v1/users`, createUserRequest, options);
-};
-
-export const getPostUsersMutationFetcher = (options?: AxiosRequestConfig) => {
-  return (_: Key, { arg }: { arg: CreateUserRequest }): Promise<AxiosResponse<Created>> => {
-    return postUsers(arg, options);
-  };
-};
-export const getPostUsersMutationKey = () => [`/api/v1/users`] as const;
-
-export type PostUsersMutationResult = NonNullable<Awaited<ReturnType<typeof postUsers>>>;
-export type PostUsersMutationError = AxiosError<BadRequest | NotFound | UnprocessableEntityError | TooManyRequests>;
-
-/**
- * @summary ユーザーを作成する
- */
-export const usePostUsers = <TError = AxiosError<BadRequest | NotFound | UnprocessableEntityError | TooManyRequests>>(options?: {
-  swr?: SWRMutationConfiguration<
-    Awaited<ReturnType<typeof postUsers>>,
-    TError,
-    Key,
-    CreateUserRequest,
-    Awaited<ReturnType<typeof postUsers>>
-  > & { swrKey?: string };
-  axios?: AxiosRequestConfig;
-}) => {
-  const { swr: swrOptions, axios: axiosOptions } = options ?? {};
-
-  const swrKey = swrOptions?.swrKey ?? getPostUsersMutationKey();
-  const swrFn = getPostUsersMutationFetcher(axiosOptions);
-
-  const query = useSWRMutation(swrKey, swrFn, {
-    throwOnError: false,
-    ...swrOptions,
-  });
-
-  return {
-    swrKey,
-    ...query,
-  };
-};
 /**
  * ログイン中のユーザー情報を取得する
  * @summary ログイン中のユーザー情報を取得する

@@ -1,0 +1,25 @@
+tenant_response:
+  type: object
+  required:
+    - tenant
+  properties:
+    tenant:
+      nullable: true
+      $ref: '#/tenant'
+
+tenant:
+  type: object
+  required:
+    - code
+    - name
+    - samlEnabled
+  properties:
+    code:
+      type: string
+      example: tenant_123
+    name:
+      type: string
+      example: サンプルテナント
+    samlEnabled:
+      type: boolean
+      example: true

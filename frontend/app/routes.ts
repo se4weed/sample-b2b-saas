@@ -1,4 +1,4 @@
-import { type RouteConfig, index, layout, route } from "@react-router/dev/routes";
+import { type RouteConfig, index, layout, prefix, route } from "@react-router/dev/routes";
 
 export default [
   layout("components/layouts/SideBarLayout.tsx", [
@@ -6,9 +6,10 @@ export default [
     route("/account", "routes/account.tsx"),
     route("/admin/users", "routes/admin/users.tsx"),
     route("/admin/roles", "routes/admin/roles.tsx"),
+    route("/admin/saml-settings", "routes/admin/saml-settings.tsx"),
   ]),
   route("/about", "routes/about.tsx"),
-  route("/signin", "routes/signin.tsx"),
+  ...prefix("/signin", [index("routes/signin.tsx"), route(":tenantCode", "routes/signin-tenant.tsx")]),
   route("/terms-of-service", "routes/terms-of-service.tsx"),
   route("/privacy-policy", "routes/privacy-policy.tsx"),
   route("/password-resets", "routes/password-resets.tsx"),
