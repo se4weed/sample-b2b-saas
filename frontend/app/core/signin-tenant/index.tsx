@@ -21,7 +21,7 @@ const SigninTenant = ({ tenantCode, message }: Props) => {
       return;
     }
     startSaml();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tenantCode, message]);
 
   if (message) {
@@ -31,9 +31,7 @@ const SigninTenant = ({ tenantCode, message }: Props) => {
       <Center className="h-screen">
         <Card>
           <CardHeader>
-            <CardTitle>
-              SAMLサインインエラー
-            </CardTitle>
+            <CardTitle>SAMLサインインエラー</CardTitle>
           </CardHeader>
           <div className="p-4">
             <Button type="button" onClick={startSaml} variant="outline">
@@ -42,7 +40,7 @@ const SigninTenant = ({ tenantCode, message }: Props) => {
           </div>
         </Card>
       </Center>
-    )
+    );
   }
   return (
     <Center className="h-screen space-y-2">
