@@ -1,6 +1,26 @@
 require "rails_helper"
 
 RSpec.describe User do
+  describe "validations" do
+    let(:tenant) { FactoryBot.create(:tenant) }
+
+    it "name_idが同一テナント内で一意であること" do
+      FactoryBot.create(:user, tenant:, name_id: "name-id-001")
+      duplicated_user = FactoryBot.build(:user, tenant:, name_id: "name-id-001")
+
+      expect(duplicated_user).not_to be_valid
+      duplicated_user.valid?
+      expect(duplicated_user.errors.added?(:name_id, :taken)).to be true
+    end
+
+    it "name_idにnilを許可すること" do
+      FactoryBot.create(:user, tenant:, name_id: nil)
+      user = FactoryBot.build(:user, tenant:, name_id: nil)
+
+      expect(user).to be_valid
+    end
+  end
+
   describe "associations" do
     it { is_expected.to have_one(:credential).class_name("User::Credential").dependent(:destroy) }
     it { is_expected.to have_many(:sessions).dependent(:destroy) }

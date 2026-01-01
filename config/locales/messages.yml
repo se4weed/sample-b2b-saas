@@ -19,3 +19,4 @@ ja:
       not_found: "%{model}が見つかりません。"
       too_many_requests: "リクエストが多すぎます。しばらくしてから再度お試しください。"
       forbidden: "権限が不足しています。"
+      already_exists: "%{model}はすでに存在します。"

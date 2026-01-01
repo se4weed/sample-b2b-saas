@@ -29,6 +29,7 @@ export const EditDialog = ({ open, onOpenChange, roles, user, mutateUsers }: Pro
     defaultValues: {
       name: user.profile.name,
       roleId: user.role.id,
+      nameId: user.nameId ?? "",
       credential: {
         emailAddress: user.emailAddress,
         password: "",
@@ -44,6 +45,7 @@ export const EditDialog = ({ open, onOpenChange, roles, user, mutateUsers }: Pro
     form.reset({
       name: user.profile.name,
       roleId: user.role.id,
+      nameId: user.nameId ?? "",
       credential: {
         emailAddress: user.emailAddress,
         password: "",
@@ -70,9 +72,11 @@ export const EditDialog = ({ open, onOpenChange, roles, user, mutateUsers }: Pro
   const { trigger, isMutating } = usePatchUser({ userId: user.id }, { swr: mutationOptions });
 
   const handleSubmit = (values: z.infer<typeof Schema>) => {
+    const normalizedNameId = values.nameId?.trim();
     const payload: PatchUserRequest = {
       name: values.name,
       roleId: values.roleId,
+      nameId: normalizedNameId || null,
       credential: values.credential,
     };
 
@@ -94,6 +98,20 @@ export const EditDialog = ({ open, onOpenChange, roles, user, mutateUsers }: Pro
                 <FormItem>
                   <FormLabel>ユーザー名</FormLabel>
                   <FormDescription>ユーザーの表示名を入力してください。</FormDescription>
+                  <FormControl>
+                    <Input {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="nameId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>NameID</FormLabel>
+                  <FormDescription>SAML 連携で使用する NameID を設定できます（任意）。</FormDescription>
                   <FormControl>
                     <Input {...field} />
                   </FormControl>

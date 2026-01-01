@@ -4,6 +4,8 @@ require "ipinfo" unless defined?(IPinfo)
 class Session < ApplicationRecord
   belongs_to :user
 
+  enum :auth_type, { password: 0, saml: 1 }
+
   def browser
     Browser.new(user_agent)
   end

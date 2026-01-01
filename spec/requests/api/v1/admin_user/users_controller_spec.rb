@@ -26,7 +26,7 @@ RSpec.describe Api::V1::AdminUser::UsersController do
       end
     end
     let!(:user2) do
-      FactoryBot.create(:user, tenant: tenant, role: admin_role).tap do |user|
+      FactoryBot.create(:user, tenant: tenant, role: admin_role, name_id: "test-name-id").tap do |user|
         FactoryBot.create(:user_profile, user: user, name: "User 2")
       end
     end
@@ -44,6 +44,7 @@ RSpec.describe Api::V1::AdminUser::UsersController do
 
       expect(body[:users].size).to eq 3
       expect(body[:users].first[:profile][:name]).to eq "User 2"
+      expect(body[:users].first[:nameId]).to eq "test-name-id"
     end
 
     context "一般ユーザーがアクセスした場合" do
@@ -65,6 +66,7 @@ RSpec.describe Api::V1::AdminUser::UsersController do
       {
         roleId: general_role.id,
         name: "新規ユーザー",
+        nameId: "name-id-001",
         credential: {
           emailAddress: "new_user@example.com",
           password: "Password123!",
@@ -83,6 +85,8 @@ RSpec.describe Api::V1::AdminUser::UsersController do
       expect do
         post api_v1_admin_user_users_path, params: params
       end.to change(User, :count).by(1)
+
+      expect(User.last.name_id).to eq "name-id-001"
     end
 
     context "不正なパラメータの場合" do
@@ -96,7 +100,7 @@ RSpec.describe Api::V1::AdminUser::UsersController do
 
   describe "PATCH /api/v1/admin_user/users/:id" do
     let!(:target_user) do
-      FactoryBot.create(:user, tenant: tenant, role: general_role).tap do |user|
+      FactoryBot.create(:user, tenant: tenant, role: general_role, name_id: "before-name-id").tap do |user|
         FactoryBot.create(:user_profile, user: user, name: "Before")
       end
     end
@@ -105,6 +109,7 @@ RSpec.describe Api::V1::AdminUser::UsersController do
       {
         roleId: admin_role.id,
         name: "更新ユーザー",
+        nameId: "updated-name-id",
         credential: {
           emailAddress: "updated@example.com",
           password: "Password123!",
@@ -122,8 +127,27 @@ RSpec.describe Api::V1::AdminUser::UsersController do
     it "ユーザーが更新されること" do
       patch api_v1_admin_user_user_path(target_user), params: params
 
-      expect(target_user.reload.role_id).to eq admin_role.id
+      target_user.reload
+
+      expect(target_user.role_id).to eq admin_role.id
+      expect(target_user.name_id).to eq "updated-name-id"
       expect(target_user.credential.email_address).to eq "updated@example.com"
+    end
+
+    context "nameIdを送信しない場合" do
+      it "既存のNameIDが維持されること" do
+        patch api_v1_admin_user_user_path(target_user), params: params.except(:nameId)
+
+        expect(target_user.reload.name_id).to eq "before-name-id"
+      end
+    end
+
+    context "nameIdが空文字の場合" do
+      it "NameIDがクリアされること" do
+        patch api_v1_admin_user_user_path(target_user), params: params.merge(nameId: "")
+
+        expect(target_user.reload.name_id).to be_nil
+      end
     end
 
     context "不正なパラメータの場合" do

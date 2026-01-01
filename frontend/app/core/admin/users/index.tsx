@@ -51,6 +51,7 @@ const Users = () => {
         <TableHeader>
           <TableRow>
             <TableHead>ユーザー名</TableHead>
+            <TableHead>NameID</TableHead>
             <TableHead>メールアドレス</TableHead>
             <TableHead>ロール</TableHead>
             <TableHead />
@@ -59,7 +60,7 @@ const Users = () => {
         <TableBody>
           {isTableLoading ? (
             <TableRow>
-              <TableCell colSpan={4}>
+              <TableCell colSpan={5}>
                 <LoaderCircle className="mx-auto animate-spin" />
               </TableCell>
             </TableRow>
@@ -67,6 +68,7 @@ const Users = () => {
             users.map((user) => (
               <TableRow key={user.id}>
                 <TableCell>{user.profile.name}</TableCell>
+                <TableCell>{user.nameId ?? "-"}</TableCell>
                 <TableCell>{user.emailAddress}</TableCell>
                 <TableCell>
                   {user.role.name}（{parsePermissionType(user.role.permissionType)}）

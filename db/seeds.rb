@@ -7,3 +7,38 @@
 #   ["Action", "Comedy", "Drama", "Horror"].each do |genre_name|
 #     MovieGenre.find_or_create_by!(name: genre_name)
 #   end
+
+tenant = Tenant.find_or_create_by!(code: "test", name: "Test Tenant")
+
+admin_role = tenant.roles.find_or_create_by!(
+  name: "管理者",
+  permission_type: :admin
+)
+general_role = tenant.roles.find_or_create_by!(
+  name: "一般ユーザー",
+  permission_type: :general
+)
+
+admin_user = tenant.users.find_or_create_by!(
+  role: admin_role
+)
+admin_user.build_profile(
+  name: "Admin User"
+).save!
+admin_user.build_credential(
+  email_address: "admin@example.com",
+  password: "password123",
+  password_confirmation: "password123"
+).save!
+
+general_user = tenant.users.find_or_create_by!(
+  role: general_role
+)
+general_user.build_profile(
+  name: "General User"
+).save!
+general_user.build_credential(
+  email_address: "general@example.com",
+  password: "password123",
+  password_confirmation: "password123"
+).save!
