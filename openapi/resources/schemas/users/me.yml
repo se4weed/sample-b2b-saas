@@ -10,6 +10,7 @@ user:
   required:
     - id
     - emailAddress
+    - nameId
     - createdAt
     - updatedAt
     - profile
@@ -23,6 +24,10 @@ user:
       type: string
       format: email
       example: user@example.com
+    nameId:
+      type: string
+      nullable: true
+      example: "name-id-1234"
     createdAt:
       type: string
       format: date-time
