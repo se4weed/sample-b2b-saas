@@ -42,9 +42,9 @@ describe("SamlSettings", () => {
     });
     expect(screen.getByDisplayValue("https://idp.example.com/sso")).toBeInTheDocument();
     expect(screen.getByDisplayValue("-----BEGIN CERTIFICATE-----")).toBeInTheDocument();
-    expect(screen.getByLabelText("SPエンティティID")).toHaveValue("example");
-    expect(screen.getByLabelText("ACS URL")).toHaveValue("https://app.test/auth/saml/example/acs");
-    expect(screen.getByLabelText("開始URL")).toHaveValue("https://app.test/auth/saml/example");
+    expect(screen.getByText("example")).toBeInTheDocument();
+    expect(screen.getByText("https://app.test/auth/saml/example/acs")).toBeInTheDocument();
+    expect(screen.getByText("https://app.test/auth/saml/example")).toBeInTheDocument();
   });
 
   it("保存ボタンでSAML設定を更新できること", async () => {

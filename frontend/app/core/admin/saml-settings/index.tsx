@@ -2,7 +2,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import type { AxiosError, AxiosResponse } from "axios";
 import { LoaderCircle, Shield } from "lucide-react";
 import { useForm } from "react-hook-form";
-import { useSearchParams } from "react-router";
 import { z } from "zod";
 import { Container } from "~/components/shared/container";
 import Text from "~/components/shared/text";
@@ -17,22 +16,28 @@ import type { Ok, ServiceProvider, UnprocessableEntityError } from "~/gen/api-cl
 import { useGetSamlSetting, usePatchSamlSetting } from "~/gen/api-client/saml-settings/saml-settings";
 import { toast } from "sonner";
 import { Schema } from "./schema.zod";
+import { useEffect } from "react";
 
 const SamlSettings = () => {
   const { data, isLoading, mutate } = useGetSamlSetting();
 
   const samlSetting = data?.data?.samlSetting;
   const serviceProvider = data?.data?.serviceProvider;
-  const defaultValues = {
-    entityId: samlSetting?.entityId ?? "",
-    ssoUrl: samlSetting?.ssoUrl ?? "",
-    idpX509Certificate: samlSetting?.idpX509Certificate ?? "",
-  };
 
   const form = useForm<z.infer<typeof Schema>>({
     resolver: zodResolver(Schema),
-    defaultValues,
+    defaultValues: {
+      entityId: "",
+      ssoUrl: "",
+      idpX509Certificate: "",
+    },
   });
+
+  useEffect(() => {
+    if (samlSetting) {
+      form.reset(samlSetting);
+    }
+  }, [form, samlSetting]);
 
   const mutationOptions = {
     onSuccess(response: AxiosResponse<Ok>) {
@@ -83,52 +88,56 @@ const SamlSettings = () => {
               </div>
             </CardHeader>
             <CardContent>
-              <Form {...form}>
-                <form className="space-y-6" onSubmit={form.handleSubmit(handleSubmit)}>
-                  <FormField
-                    control={form.control}
-                    name="entityId"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>エンティティID</FormLabel>
-                        <FormControl>
-                          <Input {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="ssoUrl"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>SSO URL</FormLabel>
-                        <FormControl>
-                          <Input {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="idpX509Certificate"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>IdP X.509証明書</FormLabel>
-                        <FormControl>
-                          <Textarea className="min-h-40 font-mono text-xs" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <Button type="submit" disabled={isMutating}>
-                    保存
-                  </Button>
-                </form>
-              </Form>
+              {isLoading || !samlSetting ? (
+                <LoaderCircle className="h-6 w-6 animate-spin" />
+              ) : (
+                <Form {...form}>
+                  <form className="space-y-6" onSubmit={form.handleSubmit(handleSubmit)}>
+                    <FormField
+                      control={form.control}
+                      name="entityId"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>エンティティID</FormLabel>
+                          <FormControl>
+                            <Input {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="ssoUrl"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>SSO URL</FormLabel>
+                          <FormControl>
+                            <Input {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="idpX509Certificate"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>IdP X.509証明書</FormLabel>
+                          <FormControl>
+                            <Textarea className="min-h-40 font-mono text-xs" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <Button type="submit" disabled={isMutating}>
+                      保存
+                    </Button>
+                  </form>
+                </Form>
+              )}
             </CardContent>
           </Card>
         </>
