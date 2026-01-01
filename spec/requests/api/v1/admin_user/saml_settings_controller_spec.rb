@@ -52,7 +52,7 @@ RSpec.describe Api::V1::AdminUser::SamlSettingsController do
       it "SP情報が返されること" do
         get api_v1_admin_user_saml_setting_path
 
-        json = JSON.parse(response.body)
+        json = response.parsed_body
         expect(json["serviceProvider"]).to eq(expected_service_provider.deep_stringify_keys)
       end
     end
