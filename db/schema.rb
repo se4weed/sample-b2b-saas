@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_12_13_150152) do
+ActiveRecord::Schema[8.0].define(version: 2026_01_09_080042) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -24,12 +24,24 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_13_150152) do
     t.index ["tenant_id"], name: "index_roles_on_tenant_id"
   end
 
+  create_table "saml_settings", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "tenant_id", null: false
+    t.string "entity_id"
+    t.string "sso_url"
+    t.text "idp_x509_certificate"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "saml_request_method", default: 0, null: false
+    t.index ["tenant_id"], name: "index_saml_settings_on_tenant_id"
+  end
+
   create_table "sessions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "user_id", null: false
     t.string "ip_address"
     t.string "user_agent"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "auth_type", default: 0, null: false
     t.index ["user_id"], name: "index_sessions_on_user_id"
   end
 
@@ -37,6 +49,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_13_150152) do
     t.string "name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "code", default: "", null: false
+    t.index ["code"], name: "index_tenants_on_code", unique: true
     t.index ["name"], name: "index_tenants_on_name", unique: true
   end
 
@@ -64,11 +78,14 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_13_150152) do
     t.datetime "updated_at", null: false
     t.uuid "tenant_id", null: false
     t.uuid "role_id", null: false
+    t.string "name_id"
+    t.index ["name_id", "tenant_id"], name: "index_users_on_name_id_and_tenant_id", unique: true
     t.index ["role_id"], name: "index_users_on_role_id"
     t.index ["tenant_id"], name: "index_users_on_tenant_id"
   end
 
   add_foreign_key "roles", "tenants"
+  add_foreign_key "saml_settings", "tenants"
   add_foreign_key "sessions", "users"
   add_foreign_key "user_credentials", "users"
   add_foreign_key "user_profiles", "users"

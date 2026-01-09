@@ -10,18 +10,14 @@ import { faker } from "@faker-js/faker";
 import { HttpResponse, http } from "msw";
 
 import { PermissionType } from ".././models";
-import type { Created, UserResponse } from ".././models";
-
-export const getPostUsersResponseMock = (overrideResponse: Partial<Created> = {}): Created => ({
-  message: faker.string.alpha({ length: { min: 10, max: 20 } }),
-  ...overrideResponse,
-});
+import type { UserResponse } from ".././models";
 
 export const getGetUsersMeResponseMock = (overrideResponse: Partial<UserResponse> = {}): UserResponse => ({
   user: faker.helpers.arrayElement([
     {
       id: faker.string.uuid(),
       emailAddress: faker.internet.email(),
+      nameId: faker.helpers.arrayElement([faker.string.alpha({ length: { min: 10, max: 20 } }), null]),
       createdAt: `${faker.date.past().toISOString().split(".")[0]}Z`,
       updatedAt: `${faker.date.past().toISOString().split(".")[0]}Z`,
       profile: { name: faker.string.alpha({ length: { min: 10, max: 20 } }) },
@@ -35,23 +31,6 @@ export const getGetUsersMeResponseMock = (overrideResponse: Partial<UserResponse
   ]),
   ...overrideResponse,
 });
-
-export const getPostUsersMockHandler = (
-  overrideResponse?: Created | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<Created> | Created)
-) => {
-  return http.post("*/api/v1/users", async (info) => {
-    return new HttpResponse(
-      JSON.stringify(
-        overrideResponse !== undefined
-          ? typeof overrideResponse === "function"
-            ? await overrideResponse(info)
-            : overrideResponse
-          : getPostUsersResponseMock()
-      ),
-      { status: 201, headers: { "Content-Type": "application/json" } }
-    );
-  });
-};
 
 export const getGetUsersMeMockHandler = (
   overrideResponse?:
@@ -71,4 +50,4 @@ export const getGetUsersMeMockHandler = (
     );
   });
 };
-export const getUsersMock = () => [getPostUsersMockHandler(), getGetUsersMeMockHandler()];
+export const getUsersMock = () => [getGetUsersMeMockHandler()];

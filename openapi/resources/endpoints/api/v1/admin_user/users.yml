@@ -89,6 +89,10 @@ components:
         roleId:
           type: string
           example: role_1234567890abcdef
+        nameId:
+          type: string
+          nullable: true
+          example: user-name-id
         credential:
           $ref: '#/components/schemas/credential'
     credential:

@@ -61,6 +61,7 @@ describe("useAuthRedirect", () => {
         createdAt: "",
         updatedAt: "",
         profile: { name: "Test User" },
+        nameId: "test@example.com",
         role: {
           id: "1",
           name: "general",
@@ -113,6 +114,7 @@ describe("useAuthRedirect", () => {
         createdAt: "",
         updatedAt: "",
         profile: { name: "Test User" },
+        nameId: "test@example.com",
         role: {
           id: "1",
           name: "general",
@@ -157,6 +159,7 @@ describe("useAuthRedirect", () => {
         createdAt: "",
         updatedAt: "",
         profile: { name: "Test User" },
+        nameId: "test@example.com",
         role: {
           id: "1",
           name: "general",
@@ -188,6 +191,7 @@ describe("useAuthRedirect", () => {
         createdAt: "",
         updatedAt: "",
         profile: { name: "Test User" },
+        nameId: "test@example.com",
         role: {
           id: "1",
           name: "general",
@@ -210,6 +214,7 @@ describe("useAuthRedirect", () => {
         createdAt: "",
         updatedAt: "",
         profile: { name: "Test User" },
+        nameId: "test@example.com",
         role: {
           id: "1",
           name: "general",
@@ -233,6 +238,7 @@ describe("useAuthRedirect", () => {
         createdAt: "",
         updatedAt: "",
         profile: { name: "Test User" },
+        nameId: "test@example.com",
         role: {
           id: "1",
           name: "general",
@@ -265,6 +271,7 @@ describe("useAuthRedirect", () => {
         createdAt: "",
         updatedAt: "",
         profile: { name: "Test User" },
+        nameId: "test@example.com",
         role: {
           id: "1",
           name: "general",
@@ -299,6 +306,7 @@ describe("useAuthRedirect", () => {
         createdAt: "",
         updatedAt: "",
         profile: { name: "Test User" },
+        nameId: "test@example.com",
         role: {
           id: "1",
           name: "general",
@@ -329,6 +337,7 @@ describe("useAuthRedirect", () => {
         createdAt: "",
         updatedAt: "",
         profile: { name: "Test User" },
+        nameId: "test@example.com",
         role: {
           id: "1",
           name: "general",
@@ -351,6 +360,7 @@ describe("useAuthRedirect", () => {
         createdAt: "",
         updatedAt: "",
         profile: { name: "Test User" },
+        nameId: "test@example.com",
         role: {
           id: "1",
           name: "admin",

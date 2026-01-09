@@ -5,7 +5,8 @@
  * API仕様
  * OpenAPI spec version: v1
  */
+import type { Tenant } from "./tenant";
 
-export interface Created {
-  message: string;
+export interface TenantResponse {
+  tenant: Tenant;
 }

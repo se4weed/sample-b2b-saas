@@ -27,6 +27,8 @@ unless File.exist?(cert_path) && File.exist?(key_path)
   puts "Certificate generated at #{cert_path}"
 end
 
+system("./bin/rake", "react_router:build", exception: true)
+
 env = {
   "SSL_BIND" => "true",
   "SSL_CERT_PATH" => cert_path,

@@ -9,6 +9,7 @@ class Api::V1::UsersController < Api::V1::ApplicationController
         user: {
           id: user.id,
           emailAddress: user.credential.email_address,
+          nameId: user.name_id,
           createdAt: user.created_at,
           updatedAt: user.updated_at,
           profile: {

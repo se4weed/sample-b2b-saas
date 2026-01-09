@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  </head>
+  <body onload="document.forms[0].submit();" style="visibility:hidden;">
+    <%= form_tag(@sp_initiated_url, authenticity_token: false) do %>
+      <%= hidden_field_tag("SAMLRequest", @saml_request.to_s) %>
+      <% if @relay_state.present? %>
+        <%= hidden_field_tag("RelayState", @relay_state) %>
+      <% end %>
+      <%= submit_tag "Submit" %>
+    <% end %>
+  </body>
+</html>

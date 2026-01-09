@@ -1,0 +1,37 @@
+get:
+  tags:
+    - Tenants
+  summary: テナント情報を取得する
+  description: 指定したコードのテナント情報を取得する
+  operationId: getTenant
+  parameters:
+    - name: code
+      in: path
+      required: true
+      schema:
+        type: string
+  responses:
+    '200':
+      description: テナント情報を取得しました
+      content:
+        application/json:
+          schema:
+            $ref: '../../../schemas/tenant.yml#/tenant_response'
+    '400':
+      description: リクエストエラー
+      content:
+        application/json:
+          schema:
+            $ref: '../../../schemas/responses.yml#/bad_request'
+    '404':
+      description: テナントが見つかりません
+      content:
+        application/json: 
+          schema:
+            $ref: '../../../schemas/responses.yml#/not_found'
+    '429':
+      description: リクエストが多すぎます
+      content:
+        application/json:
+          schema:
+            $ref: '../../../schemas/responses.yml#/too_many_requests'
