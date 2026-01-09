@@ -42,7 +42,8 @@ RSpec.describe Api::V1::AdminUser::SamlSettingsController do
           samlSetting: {
             entityId: saml_setting.entity_id,
             ssoUrl: saml_setting.sso_url,
-            idpX509Certificate: saml_setting.idp_x509_certificate
+            idpX509Certificate: saml_setting.idp_x509_certificate,
+            samlRequestMethod: saml_setting.saml_request_method.upcase
           },
           serviceProvider: expected_service_provider
         }
@@ -71,7 +72,8 @@ RSpec.describe Api::V1::AdminUser::SamlSettingsController do
           samlSetting: {
             entityId: "",
             ssoUrl: "",
-            idpX509Certificate: ""
+            idpX509Certificate: "",
+            samlRequestMethod: "GET"
           },
           serviceProvider: expected_service_provider
         }
@@ -126,7 +128,8 @@ RSpec.describe Api::V1::AdminUser::SamlSettingsController do
     {
       entityId: entity_id,
       ssoUrl: "https://idp.example.com/sso",
-      idpX509Certificate: "CERT"
+      idpX509Certificate: "CERT",
+      samlRequestMethod: "GET"
     }
   end
 end

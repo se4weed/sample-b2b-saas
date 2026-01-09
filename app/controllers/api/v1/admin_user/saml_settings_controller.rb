@@ -7,7 +7,7 @@ class Api::V1::AdminUser::SamlSettingsController < Api::V1::AdminUser::Applicati
         entityId: saml_setting&.entity_id.to_s,
         ssoUrl: saml_setting&.sso_url.to_s,
         idpX509Certificate: saml_setting&.idp_x509_certificate.to_s,
-        samlRequestMethod: saml_setting&.saml_request_method.to_s.upcase || "GET"
+        samlRequestMethod: saml_setting&.saml_request_method&.upcase.presence || "GET"
       },
       serviceProvider: {
         entityId: current_tenant.code,
