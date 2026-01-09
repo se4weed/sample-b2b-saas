@@ -6,6 +6,7 @@ import { Layout } from "../../../../helpers/Layout";
 import SamlSettings from "~/core/admin/saml-settings";
 import { server } from "../../../../setupTests";
 import { getGetSamlSettingMockHandler, getPatchSamlSettingMockHandler } from "~/gen/api-client/saml-settings/saml-settings.msw";
+import { SamlSettingSamlRequestMethod } from "~/gen/api-client/models";
 
 describe("SamlSettings", () => {
   const userAction = userEvent.setup();
@@ -26,6 +27,7 @@ describe("SamlSettings", () => {
         entityId: "https://example.com/metadata",
         ssoUrl: "https://idp.example.com/sso",
         idpX509Certificate: "-----BEGIN CERTIFICATE-----",
+        samlRequestMethod: SamlSettingSamlRequestMethod.POST,
       },
       serviceProvider: {
         entityId: "example",
@@ -54,6 +56,7 @@ describe("SamlSettings", () => {
           entityId: "https://example.com/metadata",
           ssoUrl: "https://idp.example.com/sso",
           idpX509Certificate: "-----BEGIN CERTIFICATE-----",
+          samlRequestMethod: SamlSettingSamlRequestMethod.GET,
         },
         serviceProvider: {
           entityId: "example",
@@ -83,6 +86,7 @@ describe("SamlSettings", () => {
     await userAction.type(screen.getByLabelText("SSO URL"), "https://idp.example.com/new");
     await userAction.clear(screen.getByLabelText("IdP X.509証明書"));
     await userAction.type(screen.getByLabelText("IdP X.509証明書"), "CERT-DATA");
+    await userAction.click(screen.getByLabelText("GET"));
 
     await userAction.click(screen.getByRole("button", { name: "保存" }));
 
@@ -91,6 +95,7 @@ describe("SamlSettings", () => {
         entityId: "https://example.com/new",
         ssoUrl: "https://idp.example.com/new",
         idpX509Certificate: "CERT-DATA",
+        samlRequestMethod: SamlSettingSamlRequestMethod.GET,
       });
     });
     await waitFor(() => {
