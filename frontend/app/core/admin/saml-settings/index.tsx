@@ -134,7 +134,7 @@ const SamlSettings = () => {
                           <FormMessage />
                         </FormItem>
                       )}
-                        />
+                    />
                     <FormField
                       control={form.control}
                       name="samlRequestMethod"
