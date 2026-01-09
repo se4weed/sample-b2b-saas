@@ -1333,6 +1333,7 @@ components:
           entityId: example-corp
           initiateUrl: https://app.example.com/auth/saml/example
         samlSetting:
+          samlRequestMethod: GET
           ssoUrl: https://idp.example.com/sso
           entityId: https://sp.example.com/metadata
           idpX509Certificate: idpX509Certificate
@@ -1347,6 +1348,7 @@ components:
       type: object
     saml_setting:
       example:
+        samlRequestMethod: GET
         ssoUrl: https://idp.example.com/sso
         entityId: https://sp.example.com/metadata
         idpX509Certificate: idpX509Certificate
@@ -1361,9 +1363,16 @@ components:
         idpX509Certificate:
           description: PEM形式の証明書
           type: string
+        samlRequestMethod:
+          description: SAMLリクエストの送信方法
+          enum:
+          - GET
+          - POST
+          type: string
       required:
       - entityId
       - idpX509Certificate
+      - samlRequestMethod
       - ssoUrl
       type: object
     service_provider:

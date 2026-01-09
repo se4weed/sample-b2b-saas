@@ -5,10 +5,13 @@
  * API仕様
  * OpenAPI spec version: v1
  */
+import type { SamlSettingSamlRequestMethod } from "./samlSettingSamlRequestMethod";
 
 export interface SamlSetting {
   entityId: string;
   ssoUrl: string;
   /** PEM形式の証明書 */
   idpX509Certificate: string;
+  /** SAMLリクエストの送信方法 */
+  samlRequestMethod: SamlSettingSamlRequestMethod;
 }

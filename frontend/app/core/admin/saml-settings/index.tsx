@@ -17,6 +17,8 @@ import { useGetSamlSetting, usePatchSamlSetting } from "~/gen/api-client/saml-se
 import { toast } from "sonner";
 import { Schema } from "./schema.zod";
 import { useEffect } from "react";
+import { Select, SelectItem } from "~/components/ui/select";
+import { RadioGroup, RadioGroupItem } from "~/components/ui/radio-group";
 
 const SamlSettings = () => {
   const { data, isLoading, mutate } = useGetSamlSetting();
@@ -30,6 +32,7 @@ const SamlSettings = () => {
       entityId: "",
       ssoUrl: "",
       idpX509Certificate: "",
+      samlRequestMethod: "GET",
     },
   });
 
@@ -127,6 +130,28 @@ const SamlSettings = () => {
                           <FormLabel>IdP X.509証明書</FormLabel>
                           <FormControl>
                             <Textarea className="min-h-40 font-mono text-xs" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                        />
+                    <FormField
+                      control={form.control}
+                      name="samlRequestMethod"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>SAMLリクエスト送信方法</FormLabel>
+                          <FormControl>
+                            <RadioGroup value={field.value} onValueChange={field.onChange} className="flex gap-4">
+                              <div className="flex items-center gap-3">
+                                <RadioGroupItem id="samlRequestMethod-GET" value="GET" />
+                                <Label htmlFor="samlRequestMethod-GET">GET</Label>
+                              </div>
+                              <div className="flex items-center gap-3">
+                                <RadioGroupItem id="samlRequestMethod-POST" value="POST" />
+                                <Label htmlFor="samlRequestMethod-POST">POST</Label>
+                              </div>
+                            </RadioGroup>
                           </FormControl>
                           <FormMessage />
                         </FormItem>

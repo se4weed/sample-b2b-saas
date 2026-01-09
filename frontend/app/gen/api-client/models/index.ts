@@ -39,6 +39,7 @@ export * from "./roles";
 export * from "./samlSetting";
 export * from "./samlSettingRequest";
 export * from "./samlSettingResponse";
+export * from "./samlSettingSamlRequestMethod";
 export * from "./serviceProvider";
 export * from "./tenant";
 export * from "./tenantResponse";

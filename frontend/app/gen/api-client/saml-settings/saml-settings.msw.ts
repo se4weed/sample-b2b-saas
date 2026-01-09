@@ -16,6 +16,7 @@ export const getGetSamlSettingResponseMock = (overrideResponse: Partial<SamlSett
     entityId: faker.string.alpha({ length: { min: 10, max: 20 } }),
     ssoUrl: faker.internet.url(),
     idpX509Certificate: faker.string.alpha({ length: { min: 10, max: 20 } }),
+    samlRequestMethod: faker.helpers.arrayElement(["GET", "POST"] as const),
   },
   serviceProvider: {
     entityId: faker.string.alpha({ length: { min: 10, max: 20 } }),

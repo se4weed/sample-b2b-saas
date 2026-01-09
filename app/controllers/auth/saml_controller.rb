@@ -11,10 +11,15 @@ class Auth::SamlController < ApplicationController
     tenant = Tenant.find_by!(code: tenant_code)
     saml_setting = tenant.saml_setting
 
-    saml_request = OneLogin::RubySaml::Authrequest.new
-    relay_state = params[:redirectUrl].presence || "/frontend/"
+    @sp_initiated_url = saml_setting.sso_url
+    @saml_request = OneLogin::RubySaml::Authrequest.new
+    @relay_state = params[:redirectUrl].presence || "/frontend/"
 
-    redirect_to saml_request.create(build_settings(saml_setting, tenant), RelayState: relay_state), allow_other_host: true
+    if saml_setting.saml_request_method_get?
+      redirect_to @saml_request.create(build_settings(saml_setting, tenant), RelayState: @relay_state), allow_other_host: true and return
+    else
+      render "auth/saml/initiate_form", layout: false
+    end
   end
 
   def acs

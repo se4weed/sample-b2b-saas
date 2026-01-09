@@ -6,7 +6,8 @@ class Api::V1::AdminUser::SamlSettingsController < Api::V1::AdminUser::Applicati
       samlSetting: {
         entityId: saml_setting&.entity_id.to_s,
         ssoUrl: saml_setting&.sso_url.to_s,
-        idpX509Certificate: saml_setting&.idp_x509_certificate.to_s
+        idpX509Certificate: saml_setting&.idp_x509_certificate.to_s,
+        samlRequestMethod: saml_setting&.saml_request_method.to_s.upcase || "GET"
       },
       serviceProvider: {
         entityId: current_tenant.code,
@@ -48,15 +49,17 @@ class Api::V1::AdminUser::SamlSettingsController < Api::V1::AdminUser::Applicati
     params.require(:entityId)
     params.require(:ssoUrl)
     params.require(:idpX509Certificate)
+    params.require(:samlRequestMethod)
 
-    params.permit(:entityId, :ssoUrl, :idpX509Certificate)
+    params.permit(:entityId, :ssoUrl, :idpX509Certificate, :samlRequestMethod)
   end
 
   def saml_setting_attributes
     {
       entity_id: saml_setting_params[:entityId],
       sso_url: saml_setting_params[:ssoUrl],
-      idp_x509_certificate: saml_setting_params[:idpX509Certificate]
+      idp_x509_certificate: saml_setting_params[:idpX509Certificate],
+      saml_request_method: saml_setting_params[:samlRequestMethod].downcase
     }
   end
 
