@@ -26,7 +26,7 @@ const SamlLoginDialog = ({ open, onOpenChange }: Props) => {
           value={companyCode}
           onChange={(e) => setCompanyCode(e.target.value)}
         />
-        <Button>
+        <Button asChild>
           <Link to={`/signin/${companyCode}`} className="flex items-center">
             <span>SAMLでログイン</span>
             <ArrowRightIcon />
