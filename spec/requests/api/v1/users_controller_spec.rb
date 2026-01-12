@@ -24,6 +24,7 @@ RSpec.describe Api::V1::UsersController, type: :request do
         user: {
           id: user.id,
           emailAddress: user.credential.email_address,
+          nameId: user.name_id,
           createdAt: user.created_at.iso8601(3),
           updatedAt: user.updated_at.iso8601(3),
           profile: {
@@ -57,6 +58,7 @@ RSpec.describe Api::V1::UsersController, type: :request do
           user: {
             id: user.id,
             emailAddress: user.credential.email_address,
+            nameId: user.name_id,
             createdAt: user.created_at.iso8601(3),
             updatedAt: user.updated_at.iso8601(3),
             profile: {

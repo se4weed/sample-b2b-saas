@@ -121,5 +121,10 @@ components:
           type: string
           description: ロールID
           example: "role_123456"
+        nameId:
+          type: string
+          nullable: true
+          description: NameID
+          example: "name-id-1234"
         credential:
           $ref: './users.yml#/components/schemas/credential'

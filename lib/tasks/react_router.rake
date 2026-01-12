@@ -1,7 +1,7 @@
 namespace :react_router do
   desc "Build the React Router application"
   task :build do
-    sh "cd frontend && pnpm run build"
+    sh "cd frontend && pnpm run build:local"
     sh "rm -rf public/frontend"
     sh "mkdir -p public/frontend"
     sh "cp -r frontend/build/client/* public/frontend/"

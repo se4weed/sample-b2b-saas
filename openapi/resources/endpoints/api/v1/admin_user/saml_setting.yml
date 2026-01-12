@@ -1,0 +1,139 @@
+get:
+  tags:
+    - SamlSettings
+  summary: SAML設定を取得する
+  description: SAML設定を取得する
+  operationId: getSamlSetting
+  responses:
+    '200':
+      description: SAML設定を取得しました
+      content:
+        application/json:
+          schema:
+            $ref: '../../../../schemas/saml_setting.yml#/saml_setting_response'
+    '401':
+      description: 認証エラー
+      content:
+        application/json:
+          schema:
+            $ref: '../../../../schemas/responses.yml#/unauthorized'
+    '403':
+      description: 権限不足
+      content:
+        application/json:
+          schema:
+            $ref: '../../../../schemas/responses.yml#/forbidden'
+    '429':
+      description: リクエストが多すぎます
+      content:
+        application/json:
+          schema:
+            $ref: '../../../../schemas/responses.yml#/too_many_requests'
+
+post:
+  tags:
+    - SamlSettings
+  summary: SAML設定を作成する
+  description: SAML設定を作成する
+  operationId: postSamlSetting
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '#/components/schemas/saml_setting_request'
+  responses:
+    '200':
+      description: SAML設定を作成しました
+      content:
+        application/json:
+          schema:
+            $ref: '../../../../schemas/responses.yml#/ok'
+    '400':
+      description: リクエストエラー
+      content:
+        application/json:
+          schema:
+            $ref: '../../../../schemas/responses.yml#/bad_request'
+    '401':
+      description: 認証エラー
+      content:
+        application/json:
+          schema:
+            $ref: '../../../../schemas/responses.yml#/unauthorized'
+    '403':
+      description: 権限不足
+      content:
+        application/json:
+          schema:
+            $ref: '../../../../schemas/responses.yml#/forbidden'
+    '422':
+      description: 作成に失敗しました
+      content:
+        application/json:
+          schema:
+            $ref: '../../../../schemas/responses.yml#/unprocessable_entity_error'
+
+patch:
+  tags:
+    - SamlSettings
+  summary: SAML設定を更新する
+  description: SAML設定を更新する
+  operationId: patchSamlSetting
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '#/components/schemas/saml_setting_request'
+  responses:
+    '200':
+      description: SAML設定を更新しました
+      content:
+        application/json:
+          schema:
+            $ref: '../../../../schemas/responses.yml#/ok'
+    '400':
+      description: リクエストエラー
+      content:
+        application/json:
+          schema:
+            $ref: '../../../../schemas/responses.yml#/bad_request'
+    '401':
+      description: 認証エラー
+      content:
+        application/json:
+          schema:
+            $ref: '../../../../schemas/responses.yml#/unauthorized'
+    '403':
+      description: 権限不足
+      content:
+        application/json:
+          schema:
+            $ref: '../../../../schemas/responses.yml#/forbidden'
+    '422':
+      description: 更新に失敗しました
+      content:
+        application/json:
+          schema:
+            $ref: '../../../../schemas/responses.yml#/unprocessable_entity_error'
+
+components:
+  schemas:
+    saml_setting_request:
+      type: object
+      required:
+        - entityId
+        - ssoUrl
+        - idpX509Certificate
+      properties:
+        entityId:
+          type: string
+          example: https://sp.example.com/metadata
+        ssoUrl:
+          type: string
+          format: uri
+          example: https://idp.example.com/sso
+        idpX509Certificate:
+          type: string
+          description: PEM形式の証明書

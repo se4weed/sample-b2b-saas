@@ -6,9 +6,8 @@
  * OpenAPI spec version: v1
  */
 
-export interface CreateUserRequest {
-  emailAddress: string;
-  password: string;
-  passwordConfirmation: string;
+export interface Tenant {
+  code: string;
   name: string;
+  samlEnabled: boolean;
 }

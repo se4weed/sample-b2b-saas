@@ -1,7 +1,18 @@
 require "rails_helper"
 
 RSpec.describe User do
+  describe "validations" do
+    subject { FactoryBot.build(:user, tenant: tenant, role: role) }
+
+    let(:tenant) { FactoryBot.create(:tenant) }
+    let(:role) { FactoryBot.create(:role, tenant: tenant) }
+
+    it { is_expected.to validate_uniqueness_of(:name_id).scoped_to(:tenant_id).allow_nil }
+  end
+
   describe "associations" do
+    subject(:user) { FactoryBot.build(:user) }
+
     it { is_expected.to have_one(:credential).class_name("User::Credential").dependent(:destroy) }
     it { is_expected.to have_many(:sessions).dependent(:destroy) }
     it { is_expected.to have_one(:profile).class_name("User::Profile").dependent(:destroy) }

@@ -8,6 +8,7 @@ class Api::V1::AdminUser::UsersController < Api::V1::AdminUser::ApplicationContr
         {
           id: user.id,
           emailAddress: user.credential.email_address,
+          nameId: user.name_id,
           createdAt: user.created_at,
           updatedAt: user.updated_at,
           profile: {
@@ -30,7 +31,8 @@ class Api::V1::AdminUser::UsersController < Api::V1::AdminUser::ApplicationContr
       password_confirmation: user_credential_params[:passwordConfirmation],
       name: user_params[:name],
       role_id: user_params[:roleId],
-      tenant_id: current_user.tenant_id
+      tenant_id: current_user.tenant_id,
+      name_id: user_params[:nameId].presence
     ).call!
 
     UserMailer.welcome(user).deliver_later
@@ -52,7 +54,8 @@ class Api::V1::AdminUser::UsersController < Api::V1::AdminUser::ApplicationContr
       password_confirmation: user_credential_params[:passwordConfirmation],
       name: user_params[:name],
       role_id: user_params[:roleId],
-      tenant_id: current_user.tenant_id
+      tenant_id: current_user.tenant_id,
+      name_id: params.key?(:nameId) ? user_params[:nameId].presence : user.name_id
     ).call!
 
     render status: :ok, json: {
@@ -82,7 +85,7 @@ class Api::V1::AdminUser::UsersController < Api::V1::AdminUser::ApplicationContr
     params.require(:roleId)
     params.require(:name)
 
-    params.permit(:roleId, :name)
+    params.permit(:roleId, :name, :nameId)
   end
 
   def user_credential_params
