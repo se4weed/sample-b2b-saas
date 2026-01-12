@@ -215,6 +215,45 @@ describe("Signin", () => {
     expect(passwordResetLink).toHaveAttribute("href", "/password-resets");
   });
 
+  it("SAMLログインのダイアログが開くこと", async () => {
+    render(
+      <BrowserRouter>
+        <Layout>
+          <Signin />
+        </Layout>
+      </BrowserRouter>
+    );
+
+    const samlButton = screen.getByRole("button", { name: "SAMLでログイン" });
+    await userAction.click(samlButton);
+
+    await waitFor(() => {
+      expect(screen.getByText("SAMLでログインするには、会社コードを入力してください。")).toBeInTheDocument();
+      expect(screen.getByLabelText("会社コード")).toBeInTheDocument();
+    });
+  });
+
+  it("会社コードを入力するとSAMLログインリンクが更新されること", async () => {
+    render(
+      <BrowserRouter>
+        <Layout>
+          <Signin />
+        </Layout>
+      </BrowserRouter>
+    );
+
+    const samlButton = screen.getByRole("button", { name: "SAMLでログイン" });
+    await userAction.click(samlButton);
+
+    const companyCodeInput = await screen.findByLabelText("会社コード");
+    await userAction.type(companyCodeInput, "acme");
+
+    await waitFor(() => {
+      const samlLink = screen.getByRole("link", { name: "SAMLでログイン" });
+      expect(samlLink).toHaveAttribute("href", "/signin/acme");
+    });
+  });
+
   it("メールアドレスとパスワードの両方が必須こと", async () => {
     render(
       <BrowserRouter>
