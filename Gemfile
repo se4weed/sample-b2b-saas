@@ -42,7 +42,7 @@ group :development, :test do
   gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"
 
   # Static analysis for security vulnerabilities [https://brakemanscanner.org/]
-  gem "brakeman", "~>7.1.1", require: false
+  gem "brakeman", require: false
 
   gem "rspec"
   gem "rspec-collection_matchers"
