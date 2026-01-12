@@ -90,7 +90,7 @@ const SignInForm = ({
   form: UseFormReturn<z.infer<typeof Schema>>;
   onSubmit: (data: z.infer<typeof Schema>) => void;
   isMutating: boolean;
-  }) => {
+}) => {
   const [samlDialogOpen, setSamlDialogOpen] = useState(false);
   return (
     <>
@@ -137,7 +137,8 @@ const SignInForm = ({
               <span>ログイン</span>
             </Button>
             <Button type="button" variant="outline" className="w-full space-x-1" onClick={() => setSamlDialogOpen(true)}>
-              <KeyRoundIcon /><span>SAMLでログイン</span>
+              <KeyRoundIcon />
+              <span>SAMLでログイン</span>
             </Button>
           </div>
         </form>
