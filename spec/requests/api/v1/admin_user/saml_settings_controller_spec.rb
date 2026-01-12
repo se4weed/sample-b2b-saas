@@ -7,6 +7,20 @@ RSpec.describe Api::V1::AdminUser::SamlSettingsController do
   let(:admin_role) { FactoryBot.create(:role, tenant: tenant, permission_type: :admin) }
   let(:admin_user) { FactoryBot.create(:user, tenant: tenant, role: admin_role) }
 
+  let(:entity_id) { "https://example.com/metadata" }
+  let(:sso_url) { "https://idp.example.com/sso" }
+  let(:idp_x509_certificate) { "CERT" }
+  let(:saml_request_method) { "POST" }
+
+  let(:saml_setting_params) do
+    {
+      entityId: entity_id,
+      ssoUrl: sso_url,
+      idpX509Certificate: idp_x509_certificate,
+      samlRequestMethod: saml_request_method
+    }
+  end
+
   before { sign_in_as(admin_user) }
 
   describe "GET /api/v1/admin_user/saml_setting" do
@@ -100,11 +114,12 @@ RSpec.describe Api::V1::AdminUser::SamlSettingsController do
 
     context "SAML設定が既に存在する場合" do
       let!(:saml_setting) { FactoryBot.create(:saml_setting, tenant: tenant) }
+      let(:entity_id) { "https://new.example.com/metadata" }
 
       it "既存の設定を更新できること" do
-        patch api_v1_admin_user_saml_setting_path, params: saml_setting_params(entity_id: "https://new.example.com")
+        patch api_v1_admin_user_saml_setting_path, params: saml_setting_params
 
-        expect(saml_setting.reload.entity_id).to eq("https://new.example.com")
+        expect(saml_setting.reload.entity_id).to eq("https://new.example.com/metadata")
       end
     end
 
@@ -122,14 +137,5 @@ RSpec.describe Api::V1::AdminUser::SamlSettingsController do
         expect(response.body).to eq(expected_body.to_json)
       end
     end
-  end
-
-  def saml_setting_params(entity_id: "https://example.com/metadata")
-    {
-      entityId: entity_id,
-      ssoUrl: "https://idp.example.com/sso",
-      idpX509Certificate: "CERT",
-      samlRequestMethod: "GET"
-    }
   end
 end
