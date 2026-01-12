@@ -1,4 +1,4 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import Center from "~/components/shared/center";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "~/components/ui/form";
 import { Input } from "~/components/ui/input";
@@ -17,7 +17,9 @@ import type { AxiosError, AxiosResponse } from "axios";
 import { useIsMobile } from "~/hooks/use-mobile";
 import Text from "~/components/shared/text";
 import { WideLogo } from "~/components/shared/logo";
-import { LoaderCircle } from "lucide-react";
+import { KeyRoundIcon, LoaderCircle } from "lucide-react";
+import { useState } from "react";
+import SamlLoginDialog from "./SamlLoginDialog";
 
 const Signin = () => {
   const form = useForm<z.infer<typeof Schema>>({
@@ -88,50 +90,59 @@ const SignInForm = ({
   form: UseFormReturn<z.infer<typeof Schema>>;
   onSubmit: (data: z.infer<typeof Schema>) => void;
   isMutating: boolean;
-}) => {
+  }) => {
+  const [samlDialogOpen, setSamlDialogOpen] = useState(false);
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 w-full">
-        <FormField
-          control={form.control}
-          name="emailAddress"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>メールアドレス</FormLabel>
-              <FormControl>
-                <Input type="email" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="password"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>パスワード</FormLabel>
-              <FormControl>
-                <Input type="password" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <div className="p-2">
-          <Text type="description">
-            パスワードをお忘れですか？
-            <Link to="/password-resets" className="text-link text-sm">
-              パスワードをリセット
-            </Link>
-            する
-          </Text>
-        </div>
-        <Button type="submit" className="w-full space-x-1" disabled={isMutating}>
-          {isMutating && <LoaderCircle className="h-full animate-spin" />}
-          <span>ログイン</span>
-        </Button>
-      </form>
-    </Form>
+    <>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 w-full">
+          <FormField
+            control={form.control}
+            name="emailAddress"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>メールアドレス</FormLabel>
+                <FormControl>
+                  <Input type="email" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="password"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>パスワード</FormLabel>
+                <FormControl>
+                  <Input type="password" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <div className="p-2">
+            <Text type="description">
+              パスワードをお忘れですか？
+              <Link to="/password-resets" className="text-link text-sm">
+                パスワードをリセット
+              </Link>
+              する
+            </Text>
+          </div>
+          <div className="space-y-4">
+            <Button type="submit" className="w-full space-x-1" disabled={isMutating}>
+              {isMutating && <LoaderCircle className="h-full animate-spin" />}
+              <span>ログイン</span>
+            </Button>
+            <Button type="button" variant="outline" className="w-full space-x-1" onClick={() => setSamlDialogOpen(true)}>
+              <KeyRoundIcon /><span>SAMLでログイン</span>
+            </Button>
+          </div>
+        </form>
+      </Form>
+      <SamlLoginDialog open={samlDialogOpen} onOpenChange={setSamlDialogOpen} />
+    </>
   );
 };
