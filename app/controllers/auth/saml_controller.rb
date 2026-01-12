@@ -4,7 +4,7 @@ class Auth::SamlController < ApplicationController
   allow_unauthenticated_access only: %i[initiate acs]
   skip_forgery_protection only: :acs
 
-  SAML_SETTING_URL = "/frontend/admin/saml-settings".freeze
+  SAML_SETTING_URL = "/admin/saml-settings".freeze
 
   def initiate
     tenant_code = params[:tenant_code]
@@ -13,7 +13,7 @@ class Auth::SamlController < ApplicationController
 
     @sp_initiated_url = saml_setting.sso_url
     @saml_request = OneLogin::RubySaml::Authrequest.new
-    @relay_state = params[:redirectUrl].presence || "/frontend/"
+    @relay_state = params[:redirectUrl].presence
 
     if saml_setting.saml_request_method_get?
       redirect_to @saml_request.create(build_settings(saml_setting, tenant), RelayState: @relay_state), allow_other_host: true and return
@@ -41,7 +41,7 @@ class Auth::SamlController < ApplicationController
 
     start_new_session_for(user)
 
-    redirect_to params[:RelayState].presence || "/frontend/"
+    redirect_to params[:RelayState].presence
   end
 
   private
@@ -68,6 +68,6 @@ class Auth::SamlController < ApplicationController
   end
 
   def signin_with_error_path(tenant_code:, message: "SAML sign-in failed")
-    "/frontend/signin/#{tenant_code}?error=saml&message=#{CGI.escape(message)}"
+    "/signin/#{tenant_code}?error=saml&message=#{CGI.escape(message)}"
   end
 end

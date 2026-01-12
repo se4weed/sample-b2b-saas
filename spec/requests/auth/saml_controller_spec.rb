@@ -54,7 +54,7 @@ RSpec.describe "Auth::SamlController" do
 
       post "/auth/saml/#{tenant.code}/acs", params: { SAMLResponse: "bad" }
 
-      expect(response).to redirect_to("/frontend/signin/acme?error=saml&message=Invalid+SAML+response")
+      expect(response).to redirect_to("/signin/acme?error=saml&message=Invalid+SAML+response")
     end
   end
 end
