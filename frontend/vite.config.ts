@@ -22,7 +22,7 @@ export default defineConfig({
   },
   // As also defined in react-router.config.ts, this tells Vite that
   // the app is served from the "/assets/" sub-path.
-  base: "/",
+  base: process.env.NODE_ENV === "development" ? "/" : "/frontend/",
 
   // These are settings for the dev server.
   server: {
