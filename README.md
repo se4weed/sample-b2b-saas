@@ -138,7 +138,7 @@ bin/openapi-generate
 ```
 
 ### 8. HTTPSでのローカルアクセス（任意）
-開発中に `https://localhost:3000` でアプリを確認したい場合は以下のコマンドを利用します。
+開発中に `https://localhost:3333` でアプリを確認したい場合は以下のコマンドを利用します。
 
 ```bash
 bin/dev-https
@@ -147,7 +147,7 @@ bin/dev-https
 - 初回実行時に `config/ssl/localhost.{crt,key}` を self-signed 証明書で生成します（`openssl` が必要）。
 - ブラウザで証明書警告が表示された場合は、生成された `localhost.crt` を OS のキーチェイン等に登録して信頼してください。
 - 通常の HTTP 起動は従来通り `bin/dev` を利用できます。
-- Vite 開発サーバーから API へ HTTPS で接続するため、`VITE_BACKEND_ORIGIN=https://localhost:3000` を指定して `pnpm --filter frontend dev` を起動してください。
+- Vite 開発サーバーから API へ HTTPS で接続するため、`VITE_BACKEND_ORIGIN=https://localhost:3333` を指定して `pnpm --filter frontend dev` を起動してください。
 - CSRF Cookie を含む HTTPS 同士の通信が必要な場合は、フロントエンド開発サーバーも HTTPS で起動します。`bin/dev-https` で生成された `config/ssl/localhost.{crt,key}` を使って `VITE_DEV_SERVER_HTTPS=1 pnpm --filter frontend dev` を実行してください（別パスを使いたい場合は `VITE_DEV_SERVER_CERT_PATH` と `VITE_DEV_SERVER_KEY_PATH` を指定します）。
 
 ## 🚀 実装手順
@@ -193,7 +193,7 @@ docker compose up -d
 
 ### 2. Railsサーバーの起動
 ```bash
-# ターミナル1: Rails APIサーバー (ポート3000)
+# ターミナル1: Rails APIサーバー (ポート3333)
 rails server
 ```
 
@@ -208,7 +208,7 @@ pnpm run dev
 
 ### API Proxy設定
 
-開発環境では、フロントエンド(Vite: ポート5173)とバックエンド(Rails: ポート3000)が異なるポートで動作します。
+開発環境では、フロントエンド(Vite: ポート5173)とバックエンド(Rails: ポート3333)が異なるポートで動作します。
 CORS問題を回避するため、Viteの開発サーバーは`/api`で始まるリクエストをRailsサーバーにプロキシします。
 
 #### proxy設定の仕組み
@@ -217,7 +217,7 @@ CORS問題を回避するため、Viteの開発サーバーは`/api`で始まる
 server: {
   proxy: {
     "/api": {
-      target: "https://localhost:3000",
+      target: "https://localhost:3333",
       rewrite: (path) => path.replace(/^\/api/, "")
     }
   }
@@ -240,7 +240,7 @@ fetch('/api/posts')
 ### アセット配信について
 
 - **開発環境**: フロントエンドアセットはVite(5173)から配信
-- **本番環境**: フロントエンドアセットはRails(3000/80)から配信
+- **本番環境**: フロントエンドアセットはRails(3333/80)から配信
 
 ## 🧪 テスト環境
 

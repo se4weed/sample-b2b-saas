@@ -27,7 +27,7 @@
 threads_count = ENV.fetch("RAILS_MAX_THREADS", 3)
 threads threads_count, threads_count
 
-default_port = ENV.fetch("PORT", 3000)
+default_port = ENV.fetch("PORT", 3333)
 
 if ENV["SSL_BIND"] == "true"
   ssl_cert_path = ENV.fetch("SSL_CERT_PATH", File.expand_path("ssl/localhost.crt", __dir__))
@@ -38,7 +38,7 @@ if ENV["SSL_BIND"] == "true"
            cert: ssl_cert_path,
            verify_mode: "none"
 else
-  # Specifies the `port` that Puma will listen on to receive requests; default is 3000.
+  # Specifies the `port` that Puma will listen on to receive requests; default is 3333.
   port default_port
 end
 

@@ -27,8 +27,8 @@ admin_user.build_profile(
 ).save!
 admin_user.build_credential(
   email_address: "admin@example.com",
-  password: "password123",
-  password_confirmation: "password123"
+  password: "password",
+  password_confirmation: "password"
 ).save!
 
 general_user = tenant.users.find_or_create_by!(
@@ -39,6 +39,6 @@ general_user.build_profile(
 ).save!
 general_user.build_credential(
   email_address: "general@example.com",
-  password: "password123",
-  password_confirmation: "password123"
+  password: "password",
+  password_confirmation: "password"
 ).save!
