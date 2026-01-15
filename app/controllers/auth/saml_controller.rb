@@ -18,6 +18,7 @@ class Auth::SamlController < ApplicationController
     if saml_setting.saml_request_method_get?
       redirect_to @saml_request.create(build_settings(saml_setting, tenant), RelayState: @relay_state), allow_other_host: true and return
     else
+      @saml_request_xml = @saml_request.create_params(build_settings(saml_setting, tenant))[:SAMLRequest]
       render "auth/saml/initiate_form", layout: false
     end
   end
