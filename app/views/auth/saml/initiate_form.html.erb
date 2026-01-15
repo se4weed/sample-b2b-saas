@@ -6,7 +6,7 @@
   </head>
   <body onload="document.forms[0].submit();" style="visibility:hidden;">
     <%= form_tag(@sp_initiated_url, authenticity_token: false) do %>
-      <%= hidden_field_tag("SAMLRequest", @saml_request.to_s) %>
+      <%= hidden_field_tag("SAMLRequest", @encoded_saml_request_xml) %>
       <% if @relay_state.present? %>
         <%= hidden_field_tag("RelayState", @relay_state) %>
       <% end %>
