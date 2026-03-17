@@ -154,7 +154,7 @@ jobs:
 
       - name: Install pnpm
         if: steps.frontend_changes.outputs.changed == 'true'
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@v5
 
       - name: Setup Node.js
         if: steps.frontend_changes.outputs.changed == 'true'
@@ -221,7 +221,7 @@ jobs:
 
       - name: Install pnpm
         if: steps.frontend_changes.outputs.changed == 'true'
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@v5
 
       - name: Setup Node.js
         if: steps.frontend_changes.outputs.changed == 'true'
@@ -278,7 +278,7 @@ jobs:
 
       - name: Install pnpm
         if: steps.frontend_changes.outputs.changed == 'true'
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@v5
 
       - name: Setup Node.js
         if: steps.frontend_changes.outputs.changed == 'true'
